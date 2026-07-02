@@ -25,7 +25,7 @@ const WizardLayout = () => {
         <WizardSidebar currentStep={currentStep} />
 
         <main className="flex-1 flex flex-col overflow-hidden relative">
-          <div className="flex-1 overflow-y-auto p-10">
+          <div className="flex-1 overflow-y-auto p-4">
             {/* The actual wizard content will be rendered here via Outlet */}
             <Outlet context={{ currentStep, setCurrentStep }} />
           </div>

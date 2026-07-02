@@ -4,7 +4,7 @@ import { BiCodeBlock } from "react-icons/bi";
 
 const SelectVM = () => {
   return (
-    <div className="max-w-4xl mx-auto">
+    <div className="">
       <div className="flex items-start gap-4 mb-8">
         <div className="w-12 h-12 rounded-lg bg-blue-600/20 flex items-center justify-center text-blue-500">
           <LuCpu size={24} />

@@ -11,7 +11,7 @@ const WizardNavbar = () => {
             RY
           </div>
           <span className="text-white font-semibold whitespace-nowrap">
-            RYT Subnet Wizard
+            RYT Orbit
           </span>
         </div>
       </div>
@@ -33,7 +33,9 @@ const WizardNavbar = () => {
       <div className="flex items-center">
         <div className="flex items-center gap-2 bg-[#111827] px-3 py-1.5 rounded-full border border-[#1e293b]">
           <div className="w-2 h-2 rounded-full bg-green-500"></div>
-          <span className="text-white text-xs font-medium">Mainnet</span>
+          <span className="text-white text-xs font-medium">
+            Titan Testnet Explorer
+          </span>
         </div>
       </div>
     </nav>
