@@ -3,7 +3,6 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
 import Router from "./Router/index";
 import { ToastContainer } from "react-toastify";
-// import { WebSocketProvider } from './contexts/WebSocketContext';
 import { ApolloProvider } from "@apollo/client";
 import { client } from "./apolloClient";
 import "react-toastify/dist/ReactToastify.css";
@@ -15,12 +14,10 @@ const App = () => {
     <ApolloProvider client={client}>
       <WagmiProvider config={config}>
         <QueryClientProvider client={queryClient}>
-          {/* <WebSocketProvider> */}
           <BrowserRouter>
             <Router />
             <ToastContainer />
           </BrowserRouter>
-          {/* </WebSocketProvider> */}
         </QueryClientProvider>
       </WagmiProvider>
     </ApolloProvider>
