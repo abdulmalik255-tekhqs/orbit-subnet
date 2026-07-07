@@ -1,8 +1,8 @@
 import React from "react";
-import { HiOutlineKey } from "react-icons/hi";
+import { HiOutlineKey, HiPlay, HiRefresh } from "react-icons/hi";
 // import { LuWand2 } from "react-icons/lu";
 
-const WizardNavbar = () => {
+const WizardNavbar = ({ currentStep, onRun, isLoading, isApiSuccess }) => {
   return (
     <nav className="h-16 border-b border-[#1e293b] bg-[#0a0f1d] flex items-center justify-between px-6 sticky top-0 z-10 w-full">
       <div className="flex items-center gap-3">
@@ -31,7 +31,7 @@ const WizardNavbar = () => {
         </div>
       </div>
 
-      <div className="flex items-center">
+      <div className="flex items-center gap-4">
         <div className="flex items-center gap-2 bg-green-950/20 px-3 py-1.5 rounded-md border border-green-500/20">
           <div className="w-2 h-2 rounded-full bg-green-500"></div>
           <span className="text-green-500 text-[10px] font-bold uppercase tracking-wider">

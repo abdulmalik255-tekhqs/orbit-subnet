@@ -1,18 +1,18 @@
 import React, { useState } from "react";
-import { FiSettings, FiFlask } from "react-icons/fi";
+import { FiSettings } from "react-icons/fi";
 import { MdOutlineFactory } from "react-icons/md";
-import { IoInformationCircleOutline } from "react-icons/io5";
+import { TbFlask2 } from "react-icons/tb";
 
 const ConfigDefaults = () => {
-  const [selectedPreset, setSelectedPreset] = useState("production");
+  const [selectedPreset, setSelectedPreset] = useState("test");
 
   const presets = [
     {
       id: "test",
       title: "Test Environment",
       description:
-        "1M tokens to ewoq test address, low gas, constant fees, ICM enabled, open permissions. Skips custom Steps 6-9.",
-      //   icon: <FiFlask size={24} />,
+        "1M tokens to ewoq test address, low gas, constant fees, ICM enabled, open permissions.",
+      icon: <TbFlask2 size={24} />,
       badge: "Fast setup",
       badgeColor: "text-blue-400 bg-blue-900/40 border-none",
     },
@@ -20,7 +20,7 @@ const ConfigDefaults = () => {
       id: "production",
       title: "Production Environment",
       description:
-        "1M tokens to newly created key, low gas, constant fees, ICM enabled, open permissions. Skips custom Steps 6-9.",
+        "1M tokens to newly created key, low gas, constant fees, ICM enabled, open permissions.",
       icon: <MdOutlineFactory size={24} />,
       badge: "Recommended",
       badgeColor: "text-green-500 bg-green-900/40 border-none",
@@ -29,12 +29,12 @@ const ConfigDefaults = () => {
 
   return (
     <div className="max-w-6xl mx-auto">
-      <div className="flex items-start gap-4 mb-8">
+      <div className="flex items-start gap-4 mb-2">
         <div className="w-12 h-12 rounded-lg bg-blue-600/20 flex items-center justify-center text-blue-500">
           <FiSettings size={24} />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-white mb-2">
+          <h1 className="text-2xl font-bold text-white">
             Blockchain Configuration Defaults
           </h1>
           <p className="text-gray-400 text-sm max-w-2xl">
@@ -45,11 +45,11 @@ const ConfigDefaults = () => {
         </div>
       </div>
 
-      <div className="flex gap-2 mb-8">
-        <span className="bg-red-900/40 text-red-500 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
+      <div className="flex gap-2 mb-2">
+        <span className="border border-red-400 text-red-400 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
           Required
         </span>
-        <span className="bg-orange-900/40 text-orange-500 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
+        <span className="border border-orange-400 text-orange-400 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
           Branches
         </span>
       </div>
@@ -113,19 +113,6 @@ const ConfigDefaults = () => {
           </div>
         ))}
       </div>
-
-      {selectedPreset === "production" && (
-        <div className="mt-8 bg-blue-900/10 border border-blue-500/20 rounded-lg p-4 flex items-center gap-3">
-          <IoInformationCircleOutline
-            className="text-blue-400 shrink-0"
-            size={20}
-          />
-          <p className="text-blue-400/90 text-[13px]">
-            Production preset selected. Steps 6-9 will be skipped. 1M tokens to
-            newly created key.
-          </p>
-        </div>
-      )}
     </div>
   );
 };

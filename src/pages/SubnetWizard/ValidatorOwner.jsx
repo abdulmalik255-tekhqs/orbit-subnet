@@ -1,11 +1,6 @@
 import React, { useState } from "react";
-import {
-  LuKey,
-  LuFolder,
-  LuPlus,
-  // LuFileSignature,
-  // LuAlertTriangle,
-} from "react-icons/lu";
+import { LuKey, LuFolder, LuPlus } from "react-icons/lu";
+import { FiEdit } from "react-icons/fi";
 
 const ValidatorOwner = () => {
   const [method, setMethod] = useState("manual");
@@ -30,30 +25,29 @@ const ValidatorOwner = () => {
       id: "manual",
       title: "Enter address manually",
       description: "Input an existing 0x EVM address",
-      // icon: <LuFileSignature size={20} />,
+      icon: <FiEdit size={20} />,
     },
   ];
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="flex items-start gap-4 mb-8">
+    <div className="max-w-6xl mx-auto">
+      <div className="flex items-start gap-4 mb-2">
         <div className="w-12 h-12 rounded-lg bg-blue-600/20 flex items-center justify-center text-blue-500">
           <LuKey size={24} />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-white mb-2">
+          <h1 className="text-2xl font-bold text-white">
             Validator Manager Owner
           </h1>
           <p className="text-gray-400 text-sm">
             This EVM address will have admin control over the ValidatorManager
-            contract — it can add or remove validators once the L1 is live. Must
-            be a C-Chain address (0x...), not a P-Chain address.
+            contract — it can add or remove validators once the L1 is live.
           </p>
         </div>
       </div>
 
-      <div className="mb-8">
-        <span className="bg-red-900/40 text-red-500 text-[10px] font-bold px-2 py-0.5 rounded uppercase">
+      <div className="mb-2">
+        <span className="border border-red-400 text-red-400 text-[10px] font-bold px-2 py-0.5 rounded uppercase">
           Required
         </span>
       </div>
@@ -116,13 +110,13 @@ const ValidatorOwner = () => {
             onChange={(e) => setAddress(e.target.value)}
             className="w-full bg-[#0f172a] border border-[#1e293b] rounded-lg px-4 py-3 text-gray-200 focus:outline-none focus:border-blue-500 transition-colors"
             placeholder="0x..."
+            disabled={true}
           />
         </div>
       )}
 
-      <div className="bg-orange-900/10 border border-orange-500/20 rounded-lg p-4 flex items-start gap-4">
+      {/* <div className="bg-orange-900/10 border border-orange-500/20 rounded-lg p-4 flex items-start gap-4">
         <div className="text-orange-500 mt-0.5">
-          {/* <LuAlertTriangle size={20} /> */}
         </div>
         <div className="text-sm">
           <p className="text-gray-300">
@@ -132,7 +126,7 @@ const ValidatorOwner = () => {
             Must be an EVM 0x format address.
           </p>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

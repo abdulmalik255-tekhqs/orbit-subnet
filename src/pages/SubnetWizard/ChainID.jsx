@@ -7,13 +7,13 @@ const ChainID = () => {
   const [symbol, setSymbol] = useState("MYTKN");
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="flex items-start gap-4 mb-8">
+    <div className="max-w-6xl mx-auto">
+      <div className="flex items-start gap-4 mb-2">
         <div className="w-12 h-12 rounded-lg bg-blue-600/20 flex items-center justify-center text-blue-500">
           <MdOutlineFingerprint size={24} />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-white mb-2">Chain ID</h1>
+          <h1 className="text-2xl font-bold text-white">Chain ID</h1>
           <p className="text-gray-400 text-sm max-w-2xl leading-relaxed">
             The EVM network identifier. Must be a positive integer and globally
             unique. Re-using an existing chain ID risks replay attacks. Check
@@ -22,15 +22,15 @@ const ChainID = () => {
         </div>
       </div>
 
-      <div className="mb-8">
-        <span className="bg-red-900/40 text-red-500 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
+      <div className="mb-2">
+        <span className="border border-red-400 text-red-400 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
           Required
         </span>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-2">
-        <div className="w-full  mb-8">
-          <label className="block text-[11px] font-bold text-red-500 uppercase tracking-wider mb-2">
-            Chain ID *
+        <div className="w-full  mb-2">
+          <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">
+            Chain ID <span className="text-red-500">*</span>
           </label>
           <input
             type="text"
@@ -39,9 +39,9 @@ const ChainID = () => {
             className="w-full bg-[#0a0f1d] border border-[#1e293b] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-600 transition-colors"
           />
         </div>
-        <div className="w-full  mb-8">
-          <label className="block text-[11px] font-bold text-red-500 uppercase tracking-wider mb-2">
-            Token Symbol *
+        <div className="w-full  mb-2">
+          <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">
+            Token Symbol <span className="text-red-500">*</span>
           </label>
           <input
             type="text"

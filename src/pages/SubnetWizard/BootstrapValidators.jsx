@@ -57,18 +57,18 @@ const ValidatorForm = ({ index }) => (
 );
 
 const BootstrapValidators = () => {
-  const [numValidators, setNumValidators] = useState("2");
+  const [numValidators, setNumValidators] = useState("1");
   const [nodeOption, setNodeOption] = useState("own");
   const [ownerAddress, setOwnerAddress] = useState("P-rytf1u2mz9k...");
 
   return (
     <div className="max-w-6xl mx-auto pb-12">
-      <div className="flex items-start gap-4 mb-8">
+      <div className="flex items-start gap-4 mb-2">
         <div className="w-12 h-12 rounded-lg bg-green-600/20 flex items-center justify-center text-green-500">
           <HiOutlineServer size={24} />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-white mb-2">
+          <h1 className="text-2xl font-bold text-white">
             Bootstrap Validator Setup
           </h1>
           <p className="text-gray-400 text-sm max-w-2xl leading-relaxed font-normal">
@@ -79,18 +79,18 @@ const BootstrapValidators = () => {
         </div>
       </div>
 
-      <div className="flex gap-2 mb-8">
-        <span className="bg-red-900/40 text-red-500 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
+      <div className="flex gap-2 mb-2">
+        <span className="border border-red-400 text-red-400 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
           Required
         </span>
-        <span className="bg-blue-900/40 text-blue-500 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
+        <span className="border border-blue-400 text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
           Phase 2
         </span>
       </div>
 
-      <div className="w-full max-w-[240px] mb-8">
-        <label className="block text-[11px] font-bold text-red-400 uppercase tracking-wider mb-2">
-          Number of bootstrap validators *
+      <div className="w-full  mb-2">
+        <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">
+          Number of bootstrap validators <span className="text-red-500">*</span>
         </label>
         <input
           type="text"
@@ -100,7 +100,7 @@ const BootstrapValidators = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 max-w-2xl">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-2">
         <div
           onClick={() => setNodeOption("own")}
           className={`cursor-pointer rounded-xl p-6 border transition-all ${
@@ -150,22 +150,10 @@ const BootstrapValidators = () => {
         </div>
       </div>
 
-      <div className="max-w-3xl">
+      <div className="max-w-6xl">
         {[...Array(parseInt(numValidators) || 0)].map((_, i) => (
           <ValidatorForm key={i} index={i} />
         ))}
-      </div>
-
-      <div className="w-full max-w-lg mt-8">
-        <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">
-          Change Owner Address (defaults to Ledger P-Chain address)
-        </label>
-        <input
-          type="text"
-          value={ownerAddress}
-          onChange={(e) => setOwnerAddress(e.target.value)}
-          className="w-full bg-[#0a0f1d] border border-[#1e293b] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-600 transition-colors"
-        />
       </div>
     </div>
   );
