@@ -61,17 +61,17 @@ const ConvertL1 = () => {
     <div className="max-w-6xl mx-auto pb-12">
       {/* Header */}
       <div className="flex items-start gap-4 mb-4">
-        <div className="w-12 h-12 rounded-lg bg-[#0ea5e9]/20 flex items-center justify-center text-[#38bdf8]">
+        <div className="w-12 h-12 rounded-lg bg-[#0ea5e9]/20 flex items-center justify-center text-[#38bdf8] animate-float mt-2">
           <HiOutlineLightningBolt size={24} />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-white mb-2">
+          <h1 className="text-2xl font-bold text-white">
             Convert Subnet to L1
           </h1>
           <p className="text-gray-400 text-sm max-w-3xl leading-relaxed font-normal">
-            The most critical and irreversible transaction. Converts the subnet
-            into a fully sovereign L1 and registers bootstrap validators. After
-            this, the subnet is no longer governed by P-Chain stakers.
+            The most critical and irreversible transaction. Converts the orbit
+            into a fully sovereign and registers bootstrap validators. After
+            this, the orbit is no longer governed by stakers.
           </p>
         </div>
       </div>
@@ -138,7 +138,7 @@ const ConvertL1 = () => {
                     <HiCheckCircle size={18} />
                   </div>
                   <span
-                    className={`text-[13px] font-medium ${isCompleted ? "text-gray-400" : "text-blue-400"}`}
+                    className={`text-[13px] font-medium ${isCompleted ? "text-emerald-500" : "text-blue-400"}`}
                   >
                     {text}
                   </span>

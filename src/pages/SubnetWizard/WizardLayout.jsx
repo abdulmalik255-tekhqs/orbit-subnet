@@ -54,13 +54,29 @@ const WizardLayout = () => {
     }
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
+    // if (isLoading) return;
+
+    // If there's a runAction for the current step, execute it first
+    // We check for runAction and only proceed to navigation if it succeeds
+    // if (runAction && ![5, 6, 7, 8, 9].includes(currentStep)) {
+    //   setIsLoading(true);
+    //   try {
+    //     await runAction();
+    //   } catch (error) {
+    //     console.error("Action failed, staying on current step", error);
+    //     setIsLoading(false);
+    //     return; // Stop here if action fails
+    //   }
+    //   setIsLoading(false);
+    // }
+
     if (currentStep < totalSteps) {
       const nextStep = currentStep + 1;
       const nextRoute = stepRoutes[nextStep];
       if (nextRoute) {
         navigate(nextRoute);
-        setIsApiSuccess(false); // Reset for next step if it needs it
+        setIsApiSuccess(false);
       }
     }
   };

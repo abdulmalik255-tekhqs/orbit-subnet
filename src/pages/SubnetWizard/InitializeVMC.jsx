@@ -46,7 +46,7 @@ const InitializeVMC = () => {
     <div className="max-w-6xl mx-auto pb-12">
       {/* Header */}
       <div className="flex items-start gap-4 mb-2">
-        <div className="p-3 rounded-xl bg-green-500/10 border border-green-500/20 shadow-[0_0_15px_rgba(34,197,94,0.1)]">
+        <div className="p-3 rounded-xl bg-green-500/10 border border-green-500/20 shadow-[0_0_15px_rgba(34,197,94,0.1)] flex items-center justify-center animate-float mt-2">
           <HiOutlineLightBulb className="text-green-500 text-2xl" />
         </div>
         <div>
@@ -58,7 +58,7 @@ const InitializeVMC = () => {
             signatures. The CLI handles BLS signature collection automatically
             via the Signature Aggregator.
           </p>
-          <div className="flex gap-2 mt-4">
+          <div className="flex gap-2 mt-4 mb-4">
             <span className="px-2 py-0.5 rounded bg-blue-500/10 border border-blue-500/20 text-blue-500 text-[10px] font-bold uppercase tracking-wider">
               Automatic
             </span>

@@ -29,8 +29,8 @@ const ConfigDefaults = () => {
 
   return (
     <div className="max-w-6xl mx-auto">
-      <div className="flex items-start gap-4 mb-2">
-        <div className="w-12 h-12 rounded-lg bg-blue-600/20 flex items-center justify-center text-blue-500">
+      <div className="flex items-start gap-4 mb-4">
+        <div className="w-12 h-12 rounded-lg bg-blue-600/20 flex items-center justify-center text-blue-500 animate-float mt-2">
           <FiSettings size={24} />
         </div>
         <div>
@@ -38,14 +38,12 @@ const ConfigDefaults = () => {
             Blockchain Configuration Defaults
           </h1>
           <p className="text-gray-400 text-sm max-w-2xl">
-            Choose a preset to drive the remaining configuration. Test and
-            Production presets skip the advanced custom settings. Selecting
-            "Custom" will show Steps 6-9 for fine-grained control.
+            Choose a preset to drive the remaining configuration.
           </p>
         </div>
       </div>
 
-      <div className="flex gap-2 mb-2">
+      <div className="flex gap-2 mb-4">
         <span className="border border-red-400 text-red-400 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
           Required
         </span>

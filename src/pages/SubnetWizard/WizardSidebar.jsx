@@ -1,17 +1,9 @@
 import React from "react";
 
 const steps = [
-  // { id: 1, title: "Select VM", phase: "CREATE" },
   { id: 1, title: "Validator Owner", phase: "CREATE" },
   { id: 2, title: "Config Defaults", phase: "CREATE" },
   { id: 3, title: "Chain ID", phase: "CREATE" },
-  // { id: 4, title: "Token Symbol", phase: "CREATE" },
-  // { id: 5, title: "Token Allocation", phase: "CREATE" },
-  // { id: 6, title: "Transaction Fees", phase: "CREATE" },
-  // { id: 8, title: "Cross-Chain ICM", phase: "CREATE" },
-  // { id: 9, title: "Permissioning", phase: "CREATE" },
-  // { id: 10, title: "Signing Key", phase: "DEPLOY" },
-  // { id: 11, title: "Chain ID Confirm", phase: "DEPLOY" },
   { id: 4, title: "Bootstrap Validators", phase: "DEPLOY" },
   { id: 5, title: "CreateSubnetTx", phase: "DEPLOY" },
   { id: 6, title: "CreateChainTx", phase: "DEPLOY" },
@@ -20,79 +12,70 @@ const steps = [
   { id: 9, title: "Initialize VMC", phase: "DEPLOY" },
 ];
 
+const PhaseHeader = ({ children }) => (
+  <div className="flex items-center gap-2 px-4 pt-2.5 pb-1.5">
+    <span className="text-[9px] font-semibold uppercase tracking-[0.08em] text-[#64748B] whitespace-nowrap">
+      {children}
+    </span>
+    <span className="h-px flex-1 bg-gradient-to-r from-[#1A2438] to-transparent" />
+  </div>
+);
+
+const StepItem = ({ step, currentStep }) => {
+  const isActive = currentStep === step.id;
+  const isDone = currentStep > step.id;
+
+  return (
+    <div
+      className={`flex items-center gap-2.5 h-11 pl-3 pr-3.5 cursor-pointer transition-all border-l-2 ${
+        isActive
+          ? "border-[#3B82F6] bg-[#3B82F6]/[0.06]"
+          : "border-transparent hover:bg-[#3B82F6]/[0.04]"
+      }`}
+    >
+      <div
+        className={`w-6 h-6 rounded-full flex items-center justify-center font-mono text-[10px] font-medium shrink-0 border transition-all ${
+          isActive
+            ? "bg-[#3B82F6] border-[#3B82F6] text-white shadow-[0_0_12px_rgba(59,130,246,0.35)]"
+            : isDone
+              ? "bg-[#10B981]/15 border-[#10B981] text-[#10B981]"
+              : "bg-[#161F2E] border-[#1A2438] text-[#64748B]"
+        }`}
+      >
+        {isDone ? "✓" : step.id}
+      </div>
+      <span
+        className={`text-xs truncate ${
+          isActive
+            ? "text-[#F0F4FF] font-medium"
+            : isDone
+              ? "text-[#94A3B8]"
+              : "text-[#64748B]"
+        }`}
+      >
+        {step.title}
+      </span>
+    </div>
+  );
+};
+
 const WizardSidebar = ({ currentStep = 1 }) => {
   const createSteps = steps.filter((s) => s.phase === "CREATE");
   const deploySteps = steps.filter((s) => s.phase === "DEPLOY");
 
   return (
-    <aside className="w-72 bg-[#0a0f1d] border-r border-[#1e293b] flex flex-col h-full overflow-y-auto">
-      <div className="p-4">
-        <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-4">
-          Phase 1 — Create
-        </div>
-        <div className="space-y-1">
-          {createSteps.map((step) => (
-            <div
-              key={step.id}
-              className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${
-                currentStep === step.id
-                  ? "bg-[#111827] text-white"
-                  : "text-gray-500"
-              }`}
-            >
-              <div
-                className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ${
-                  currentStep === step.id
-                    ? "bg-blue-600 text-white"
-                    : currentStep > step.id
-                      ? "bg-green-600/20 text-green-500"
-                      : "bg-gray-800/50 text-gray-500"
-                }`}
-              >
-                {step.id}
-              </div>
-              <span
-                className={`text-xs ${currentStep === step.id ? "text-blue-400 font-medium" : ""}`}
-              >
-                {step.title}
-              </span>
-            </div>
-          ))}
-        </div>
+    <aside className="w-[250px] shrink-0 h-full overflow-y-auto bg-[#0B1120] border-r border-[#1A2438] py-3 font-sans">
+      <PhaseHeader>Phase 1 — Create</PhaseHeader>
+      {createSteps.map((step) => (
+        <StepItem key={step.id} step={step} currentStep={currentStep} />
+      ))}
 
-        <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest mt-8 mb-4">
-          Phase 2 — Deploy
-        </div>
-        <div className="space-y-1">
-          {deploySteps.map((step) => (
-            <div
-              key={step.id}
-              className={`flex items-center gap-3 px-3 py-2 rounded-md transition-colors ${
-                currentStep === step.id
-                  ? "bg-[#111827] text-white"
-                  : "text-gray-500"
-              }`}
-            >
-              <div
-                className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold ${
-                  currentStep === step.id
-                    ? "bg-blue-600 text-white"
-                    : currentStep > step.id
-                      ? "bg-green-600/20 text-green-500"
-                      : "bg-gray-800/50 text-gray-500"
-                }`}
-              >
-                {step.id}
-              </div>
-              <span
-                className={`text-xs ${currentStep === step.id ? "text-blue-400 font-medium" : ""}`}
-              >
-                {step.title}
-              </span>
-            </div>
-          ))}
-        </div>
+      <div className="mt-4">
+        <PhaseHeader>Phase 2 — Deploy</PhaseHeader>
       </div>
+      {deploySteps.map((step) => (
+        <StepItem key={step.id} step={step} currentStep={currentStep} />
+      ))}
     </aside>
   );
 };

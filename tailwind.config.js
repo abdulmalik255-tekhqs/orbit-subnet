@@ -7,13 +7,17 @@ module.exports = {
     },
     extend: {
       keyframes: {
-        dash: {
-          "0%": { strokeDashoffset: "1000" },
-          "100%": { strokeDashoffset: "0" },
+        float: {
+          "0%, 100%": {
+            transform: "translateY(0px)",
+          },
+          "50%": {
+            transform: "translateY(-8px)",
+          },
         },
       },
       animation: {
-        dash: "dash 5s linear infinite",
+        float: "float 3s ease-in-out infinite",
       },
       backgroundImage: {
         footer: "linear-gradient(90deg, #DEE5FF 0%, #DFEEFF 100%)",

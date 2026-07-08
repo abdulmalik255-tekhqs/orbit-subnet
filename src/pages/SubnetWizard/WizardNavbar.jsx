@@ -1,6 +1,6 @@
 import React from "react";
-import { HiOutlineKey, HiPlay, HiRefresh } from "react-icons/hi";
-// import { LuWand2 } from "react-icons/lu";
+import { HiOutlineKey } from "react-icons/hi";
+import { VscGitPullRequestCreate } from "react-icons/vsc";
 
 const WizardNavbar = ({ currentStep, onRun, isLoading, isApiSuccess }) => {
   return (
@@ -13,14 +13,16 @@ const WizardNavbar = ({ currentStep, onRun, isLoading, isApiSuccess }) => {
           <span className="text-white font-bold text-lg tracking-tight">
             RYT
           </span>
-          <span className="text-blue-500 font-semibold text-lg">Orbit</span>
+          <span className="text-blue-500 font-semibold text-lg animate-pulse">
+            Orbit
+          </span>
         </div>
       </div>
 
       <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-4">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-blue-600/50 bg-blue-600/10 text-blue-400 text-xs font-bold ring-1 ring-blue-600/20">
-            {/* <LuWand2 size={14} className="mt-0.5" /> */}
+            <VscGitPullRequestCreate size={14} className="mt-0.5" />
             CREATE
           </div>
           <div className="w-20 h-[1px] bg-gradient-to-r from-blue-600/50 to-gray-700"></div>
@@ -33,7 +35,7 @@ const WizardNavbar = ({ currentStep, onRun, isLoading, isApiSuccess }) => {
 
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2 bg-green-950/20 px-3 py-1.5 rounded-md border border-green-500/20">
-          <div className="w-2 h-2 rounded-full bg-green-500"></div>
+          <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
           <span className="text-green-500 text-[10px] font-bold uppercase tracking-wider">
             Titan Testnet
           </span>

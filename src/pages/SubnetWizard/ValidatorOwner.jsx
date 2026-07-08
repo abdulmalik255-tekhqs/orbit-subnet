@@ -31,8 +31,8 @@ const ValidatorOwner = () => {
 
   return (
     <div className="max-w-6xl mx-auto">
-      <div className="flex items-start gap-4 mb-2">
-        <div className="w-12 h-12 rounded-lg bg-blue-600/20 flex items-center justify-center text-blue-500">
+      <div className="flex items-start gap-4 mb-4">
+        <div className="w-12 h-12 rounded-lg bg-blue-600/20 flex items-center justify-center text-blue-500 animate-float mt-2">
           <LuKey size={24} />
         </div>
         <div>
@@ -46,7 +46,7 @@ const ValidatorOwner = () => {
         </div>
       </div>
 
-      <div className="mb-2">
+      <div className="mb-4">
         <span className="border border-red-400 text-red-400 text-[10px] font-bold px-2 py-0.5 rounded uppercase">
           Required
         </span>
@@ -102,7 +102,7 @@ const ValidatorOwner = () => {
       {method === "manual" && (
         <div className="mb-8 animate-in fade-in slide-in-from-top-2 duration-300">
           <label className="block text-gray-400 text-xs font-medium mb-2">
-            Owner Address (C-Chain) <span className="text-red-500">*</span>
+            Owner Address<span className="text-red-500">*</span>
           </label>
           <input
             type="text"
