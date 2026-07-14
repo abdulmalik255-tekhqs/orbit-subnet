@@ -1,4 +1,5 @@
 import axiosInstance from "../../api/axios";
+import { toast } from "react-toastify";
 
 const wizard = {
   state: {
@@ -11,6 +12,8 @@ const wizard = {
     },
     loading: false,
     error: null,
+    createSubnetTxID: null,
+    deployedBootstrapValidatorID: null,
   },
   reducers: {
     setLoading(state, payload) {
@@ -18,6 +21,12 @@ const wizard = {
     },
     setError(state, payload) {
       return { ...state, error: payload };
+    },
+    setCreateSubnetTxID(state, payload) {
+      return { ...state, createSubnetTxID: payload };
+    },
+    setDeployedBootstrapValidatorID(state, payload) {
+      return { ...state, deployedBootstrapValidatorID: payload };
     },
     updateStepData(state, { step, data }) {
       return {
@@ -50,36 +59,61 @@ const wizard = {
       dispatch.wizard.setLoading(true);
       try {
         // Step 1: Check availability
-        await axiosInstance.post("/subnets/check-availability", payload);
-
-        // Step 2: Create Subnet (if availability check passes)
-        const createPayload = {
-          networkName: payload.networkName,
-          vm: {
-            type: "subnet_evm",
-            chainId: payload.chainId,
-            tokenSymbol: payload.tokenSymbol || "MGT",
-            version: "latest",
-            defaults: "production",
-          },
-          sovereign: true,
-          validatorManagement: {
-            type: "proof_of_majority",
-            validatorManagerOwner: "0xA1b2C3d4E5f6789012345678901234567890AbCd",
-            proxyContractOwner: "0xA1b2C3d4E5f6789012345678901234567890AbCd",
-          },
-          interoperability: {
-            warp: true,
-            icm: false,
-          },
-        };
-
-        const response = await axiosInstance.post("/subnets", createPayload);
-
-        // Store response data
-        dispatch.wizard.updateStepData({ step: "subnet", data: response.data });
-        return response.data;
+        const res = await axiosInstance.post("/subnets/check", payload);
+        if (res?.data && res?.data?.available === false) {
+          const errorMsg =
+            "Network Name and Chain ID already exist, please choose another one";
+          throw new Error(errorMsg);
+        }
+        if (res) {
+          // Step 2: Create orbit (if availability check passes)
+          const createPayload = {
+            networkName: payload.networkName,
+            vm: {
+              type: "subnet_evm",
+              chainId: payload.chainId,
+              tokenSymbol: payload.tokenSymbol || "MGT",
+              version: "latest",
+              defaults: "production",
+            },
+            sovereign: true,
+            validatorManagement: {
+              type: "proof_of_majority",
+              validatorManagerOwner: "",
+              proxyContractOwner: "",
+              rewardBasisPoints: 0,
+            },
+            interoperability: {
+              warp: true,
+              icm: false,
+              externalGasToken: false,
+              icmRegistryAtGenesis: false,
+            },
+            force: false,
+            enableDebugging: true,
+            initialTokenAllocation: [
+              {
+                address: "0xCA3fd9482efC96A4CADf2e67047513D2BE94d2dB",
+                amount: 1000000,
+              },
+            ],
+          };
+          const response = await axiosInstance.post("/subnets", createPayload);
+          toast.success("Orbit created successfully!");
+          // Store response data
+          dispatch.wizard.setCreateSubnetTxID(response?.data?.id);
+          dispatch.wizard.updateStepData({
+            step: "subnet",
+            data: response.data,
+          });
+          return response.data;
+        }
       } catch (error) {
+        console.error(
+          "Error in postSubnetData:",
+          error?.response?.data?.error?.message || error.response,
+        );
+        toast.error(error?.response?.data?.error?.message || error.message);
         dispatch.wizard.setError(error.message);
         throw error;
       } finally {
@@ -88,17 +122,26 @@ const wizard = {
     },
     async bootstrapValidators(payload, rootState) {
       dispatch.wizard.setLoading(true);
+      console.log("Bootstrapping validators with payload:", payload);
       try {
         const response = await axiosInstance.post(
-          `/subnets/${payload.subnetId}/deploy`,
+          `/subnets/${rootState.wizard.createSubnetTxID}/deploy`,
           payload,
         );
-        dispatch.wizard.updateStepData({
-          step: "bootstrap",
-          data: response.data,
-        });
-        return response.data;
+        if (response) {
+          console.log("Bootstrap validators response:", response);
+          toast.success("Bootstrap validators deployed successfully!");
+          dispatch.wizard.setDeployedBootstrapValidatorID(
+            response?.data?.jobId,
+          );
+          dispatch.wizard.updateStepData({
+            step: "bootstrap",
+            data: response.data,
+          });
+          return response.data;
+        }
       } catch (error) {
+        toast.error(error?.response?.data?.message || error.message);
         dispatch.wizard.setError(error.message);
         throw error;
       } finally {
@@ -108,16 +151,19 @@ const wizard = {
     async createsubnetTx(payload, rootState) {
       dispatch.wizard.setLoading(true);
       try {
-        const response = await axiosInstance.post(
-          `/subnets/${payload.subnetId}/create-subnet-tx`,
-          payload,
+        const response = await axiosInstance.get(
+          `/jobs/${rootState.wizard.deployedBootstrapValidatorID}`,
         );
+        if (response?.data?.state === "pending") {
+          toast.success("Orbit transaction created successfully!");
+        }
         dispatch.wizard.updateStepData({
           step: "subnet",
           data: response.data,
         });
         return response.data;
       } catch (error) {
+        toast.error(error?.response?.data?.message || error.message);
         dispatch.wizard.setError(error.message);
         throw error;
       } finally {
@@ -137,6 +183,7 @@ const wizard = {
         });
         return response.data;
       } catch (error) {
+        toast.error(error?.response?.data?.message || error.message);
         dispatch.wizard.setError(error.message);
         throw error;
       } finally {
@@ -156,6 +203,7 @@ const wizard = {
         });
         return response.data;
       } catch (error) {
+        toast.error(error?.response?.data?.message || error.message);
         dispatch.wizard.setError(error.message);
         throw error;
       } finally {
@@ -175,6 +223,7 @@ const wizard = {
         });
         return response.data;
       } catch (error) {
+        toast.error(error?.response?.data?.message || error.message);
         dispatch.wizard.setError(error.message);
         throw error;
       } finally {
@@ -194,6 +243,7 @@ const wizard = {
         });
         return response.data;
       } catch (error) {
+        toast.error(error?.response?.data?.message || error.message);
         dispatch.wizard.setError(error.message);
         throw error;
       } finally {

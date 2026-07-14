@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useNavigate } from "react-router-dom";
 import { HiOutlineLink, HiCheckCircle, HiRefresh } from "react-icons/hi";
+import { toast } from "react-toastify";
 
 const CreateChainTx = () => {
   const { setRunAction, isApiSuccess, isLoading } = useOutletContext();
   const [progress, setProgress] = useState(0);
   const [activeStep, setActiveStep] = useState(0);
+  const navigate = useNavigate();
 
   const steps = [
     "Submitting CreateChainTx...",
@@ -43,7 +45,11 @@ const CreateChainTx = () => {
           if (next >= 100) {
             clearInterval(timer);
             setActiveStep(5); // All done
-            resolve();
+            toast.success("Chain transaction created successfully!");
+            setTimeout(() => {
+              navigate("/convert-l1");
+              resolve();
+            }, 500);
             return 100;
           }
           return next;
@@ -61,8 +67,8 @@ const CreateChainTx = () => {
         <div>
           <h1 className="text-2xl font-bold text-white ">CreateChainTx</h1>
           <p className="text-gray-400 text-sm max-w-2xl leading-relaxed font-normal">
-            Create your sovereign L1 chain on the newly created Subnet. This
-            step registers the chain infrastructure and initial genesis state.
+            Create your sovereign L1 chain on the newly created Orbit. This step
+            registers the chain infrastructure and initial genesis state.
           </p>
         </div>
       </div>
@@ -90,7 +96,7 @@ const CreateChainTx = () => {
 
         <p className="text-sm leading-6 text-gray-400">
           This transaction finalizes the chain creation. The chain will be
-          linked to Subnet ID:
+          linked to Orbit ID:
           <span className="text-gray-200 ml-1 font-mono text-xs">
             2tZ...z4K
           </span>
@@ -112,10 +118,9 @@ const CreateChainTx = () => {
             <div className="space-y-3 px-1">
               {steps.map((text, index) => {
                 const isActive = index <= activeStep;
-                const isCompleted =
-                  index < activeStep || (isApiSuccess && index === 4);
+                const isCompleted = index < activeStep || isApiSuccess;
 
-                if (!isActive) return null;
+                if (!isActive && !isApiSuccess) return null;
 
                 return (
                   <div
@@ -125,7 +130,7 @@ const CreateChainTx = () => {
                     <div
                       className={`shrink-0 ${isCompleted ? "text-green-500" : "text-blue-500 animate-pulse"}`}
                     >
-                      <HiCheckCircle size={16} />
+                      <HiCheckCircle size={18} />
                     </div>
                     <span
                       className={`text-[13px] font-medium ${isCompleted ? "text-emerald-500" : "text-blue-400"}`}

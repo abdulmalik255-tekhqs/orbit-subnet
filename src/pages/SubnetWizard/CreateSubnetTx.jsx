@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useNavigate } from "react-router-dom";
 import { HiOutlineDocumentText, HiCheckCircle } from "react-icons/hi";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 
 const CreateSubnetTx = () => {
   const { setRunAction, isApiSuccess, isLoading } = useOutletContext();
   const [progress, setProgress] = useState(0);
   const [activeStep, setActiveStep] = useState(0);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const steps = [
     "Submitting CreateSubnetTx...",
@@ -21,35 +25,56 @@ const CreateSubnetTx = () => {
   }, [setRunAction]);
 
   const handleRunApi = async () => {
-    setProgress(0);
-    setActiveStep(0);
+    const res = await dispatch.wizard.createsubnetTx({});
+    console.log("CreateSubnetTx response:", res);
 
-    // Total duration ~ 3 seconds for simulation
-    const interval = 30; // ms
-    const increment = 1;
+    // Support both 'state' (backend) and 'status' (older/other steps)
+    const status = res?.status || res?.state;
 
-    return new Promise((resolve) => {
-      const timer = setInterval(() => {
-        setProgress((prev) => {
-          const next = prev + increment;
+    if (
+      status === "pending" ||
+      status === "running" ||
+      status === "success" ||
+      status === "completed"
+    ) {
+      setProgress(0);
+      setActiveStep(0);
 
-          // Map progress to steps
-          if (next < 20) setActiveStep(0);
-          else if (next < 40) setActiveStep(1);
-          else if (next < 60) setActiveStep(2);
-          else if (next < 80) setActiveStep(3);
-          else if (next < 100) setActiveStep(4);
+      // Total duration ~ 3 seconds for simulation
+      const interval = 30; // ms
+      const increment = 1;
 
-          if (next >= 100) {
-            clearInterval(timer);
-            setActiveStep(5); // All done
-            resolve();
-            return 100;
-          }
-          return next;
-        });
-      }, interval);
-    });
+      return new Promise((resolve) => {
+        const timer = setInterval(() => {
+          setProgress((prev) => {
+            const next = prev + increment;
+
+            // Map progress to steps
+            if (next < 20) setActiveStep(0);
+            else if (next < 40) setActiveStep(1);
+            else if (next < 60) setActiveStep(2);
+            else if (next < 80) setActiveStep(3);
+            else if (next < 100) setActiveStep(4);
+
+            if (next >= 100) {
+              clearInterval(timer);
+              setActiveStep(5); // All done
+              toast.success("Orbit transaction created successfully!");
+              setTimeout(() => {
+                navigate("/create-chain-tx");
+                resolve();
+              }, 500);
+              return 100;
+            }
+            return next;
+          });
+        }, interval);
+      });
+    } else if (status === "failure") {
+      const errorMsg = res?.message || "Orbit transaction failed";
+      toast.error(errorMsg);
+      throw new Error(errorMsg);
+    }
   };
 
   return (
@@ -107,10 +132,9 @@ const CreateSubnetTx = () => {
             <div className="space-y-3 px-1">
               {steps.map((text, index) => {
                 const isActive = index <= activeStep;
-                const isCompleted =
-                  index < activeStep || (isApiSuccess && index === 4);
+                const isCompleted = index < activeStep || isApiSuccess;
 
-                if (!isActive) return null;
+                if (!isActive && !isApiSuccess) return null;
 
                 return (
                   <div

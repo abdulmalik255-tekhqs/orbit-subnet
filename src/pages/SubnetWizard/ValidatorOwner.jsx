@@ -5,7 +5,7 @@ import { FiEdit } from "react-icons/fi";
 const ValidatorOwner = () => {
   const [method, setMethod] = useState("manual");
   const [address, setAddress] = useState(
-    "0x1234567890abcdef1234567890abcdef1234abcd",
+    "0x833261B00C173896A7E0e8C7a6e884929442d1AF",
   );
 
   const selectionCards = [

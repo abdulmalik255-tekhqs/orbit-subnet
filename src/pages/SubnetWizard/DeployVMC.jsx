@@ -1,23 +1,67 @@
 import React, { useState, useEffect } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useNavigate } from "react-router-dom";
 import {
   HiOutlineDocumentText,
   HiOutlineInformationCircle,
   HiChevronDown,
+  HiCheckCircle,
 } from "react-icons/hi";
+import { toast } from "react-toastify";
 
 const DeployVMC = () => {
-  const { setRunAction, isApiSuccess } = useOutletContext();
+  const { setRunAction, isApiSuccess, isLoading } = useOutletContext();
   const [deploymentTarget, setDeploymentTarget] = useState("external");
+  const [progress, setProgress] = useState(0);
+  const [activeStep, setActiveStep] = useState(0);
+  const navigate = useNavigate();
+
+  const steps = [
+    "Deploying ValidatorManager implementation...",
+    "Deploying ProxyAdmin...",
+    "Deploying TransparentProxy...",
+    "Linking implementation to proxy...",
+    "Verifying contract source...",
+  ];
 
   // Mock deployment logic
   useEffect(() => {
-    setRunAction(() => async () => {
-      console.log("Deploying VMC...");
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-      console.log("VMC Deployed!");
-    });
+    setRunAction(() => handleRunApi);
+    return () => setRunAction(null);
   }, [setRunAction]);
+
+  const handleRunApi = async () => {
+    setProgress(0);
+    setActiveStep(0);
+
+    const interval = 30;
+    const increment = 1;
+
+    return new Promise((resolve) => {
+      const timer = setInterval(() => {
+        setProgress((prev) => {
+          const next = prev + increment;
+
+          if (next < 20) setActiveStep(0);
+          else if (next < 40) setActiveStep(1);
+          else if (next < 60) setActiveStep(2);
+          else if (next < 80) setActiveStep(3);
+          else if (next < 100) setActiveStep(4);
+
+          if (next >= 100) {
+            clearInterval(timer);
+            setActiveStep(5);
+            toast.success("VMC deployed successfully!");
+            setTimeout(() => {
+              navigate("/initialize-vmc");
+              resolve();
+            }, 500);
+            return 100;
+          }
+          return next;
+        });
+      }, interval);
+    });
+  };
 
   return (
     <div className="max-w-6xl mx-auto pb-12">
@@ -140,6 +184,45 @@ const DeployVMC = () => {
             authority). The Proxy address is what all subsequent calls use.
           </p>
         </div>
+
+        {/* Progress Section */}
+        {(isLoading || isApiSuccess) && (
+          <div className="space-y-6">
+            <div className="relative w-full h-1.5 bg-[#1e293b] rounded-full overflow-hidden">
+              <div
+                className="absolute top-0 left-0 h-full bg-blue-500 transition-all duration-300 ease-out"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+
+            <div className="space-y-3 px-1">
+              {steps.map((text, index) => {
+                const isActive = index <= activeStep;
+                const isCompleted = index < activeStep || isApiSuccess;
+
+                if (!isActive && !isApiSuccess) return null;
+
+                return (
+                  <div
+                    key={index}
+                    className="flex items-center gap-3 animate-in fade-in slide-in-from-left-2 duration-500"
+                  >
+                    <div
+                      className={`shrink-0 ${isCompleted ? "text-green-500" : "text-blue-500 animate-pulse"}`}
+                    >
+                      <HiCheckCircle size={18} />
+                    </div>
+                    <span
+                      className={`text-[13px] font-medium ${isCompleted ? "text-emerald-500" : "text-blue-400"}`}
+                    >
+                      {text}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

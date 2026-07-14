@@ -8,9 +8,9 @@ import { toast } from "react-toastify";
 const ChainID = () => {
   const { setRunAction } = useOutletContext();
   const dispatch = useDispatch();
-  const [chainId, setChainId] = useState(73821);
+  const [chainId, setChainId] = useState();
   const [networkName, setNetworkName] = useState("");
-  const [symbol, setSymbol] = useState("MYTKN");
+  const [symbol, setSymbol] = useState("");
 
   useEffect(() => {
     setRunAction(() => async () => {
@@ -72,6 +72,7 @@ const ChainID = () => {
             Chain ID <span className="text-red-500">*</span>
           </label>
           <input
+            placeholder="12345"
             type="number"
             value={chainId}
             onChange={(e) => setChainId(Number(e.target.value))}
@@ -85,11 +86,11 @@ const ChainID = () => {
             Token Symbol <span className="text-red-500">*</span>
           </label>
           <input
+            placeholder="MYTKN"
             type="text"
             value={symbol}
             onChange={(e) => setSymbol(e.target.value.toUpperCase())}
-            className="w-full bg-[#0a0f1d] border border-[#1e293b] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-600 transition-colors uppercase"
-            maxLength={8}
+            className="w-full bg-[#0a0f1d] border border-[#1e293b] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-600 transition-colors"
           />
         </div>
       </div>

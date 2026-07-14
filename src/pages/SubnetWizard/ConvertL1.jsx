@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from "react";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useNavigate } from "react-router-dom";
 import {
   HiCheckCircle,
   HiOutlineLightningBolt,
   HiExclamation,
 } from "react-icons/hi";
 import { RiCopperDiamondLine } from "react-icons/ri";
+import { toast } from "react-toastify";
 
 const ConvertL1 = () => {
   const { setRunAction, isApiSuccess, isLoading } = useOutletContext();
   const [progress, setProgress] = useState(0);
   const [activeStep, setActiveStep] = useState(0);
+  const navigate = useNavigate();
 
   const steps = [
     "Submitting ConvertSubnetToL1Tx...",
@@ -48,7 +50,11 @@ const ConvertL1 = () => {
           if (next >= 100) {
             clearInterval(timer);
             setActiveStep(5); // All done
-            resolve();
+            toast.success("Orbit converted to L1 successfully!");
+            setTimeout(() => {
+              navigate("/deploy-vmc");
+              resolve();
+            }, 500);
             return 100;
           }
           return next;
@@ -65,9 +71,7 @@ const ConvertL1 = () => {
           <HiOutlineLightningBolt size={24} />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-white">
-            Convert Subnet to L1
-          </h1>
+          <h1 className="text-2xl font-bold text-white">Convert Orbit to L1</h1>
           <p className="text-gray-400 text-sm max-w-3xl leading-relaxed font-normal">
             The most critical and irreversible transaction. Converts the orbit
             into a fully sovereign and registers bootstrap validators. After
@@ -99,10 +103,10 @@ const ConvertL1 = () => {
             This action is IRREVERSIBLE
           </h4>
           <p className="text-gray-400 text-[13px] leading-relaxed">
-            Once converted, this subnet becomes a sovereign L1. You cannot
-            revert to a standard subnet. All bootstrap validators will be
-            permanently registered. Please confirm you have backed up your
-            sidecar.json and genesis.json files.
+            Once converted, this orbit becomes a sovereign L1. You cannot revert
+            to a standard orbit. All bootstrap validators will be permanently
+            registered. Please confirm you have backed up your sidecar.json and
+            genesis.json files.
           </p>
         </div>
       </div>
@@ -122,10 +126,9 @@ const ConvertL1 = () => {
           <div className="space-y-3 px-1">
             {steps.map((text, index) => {
               const isActive = index <= activeStep;
-              const isCompleted =
-                index < activeStep || (isApiSuccess && index === 4);
+              const isCompleted = index < activeStep || isApiSuccess;
 
-              if (!isActive) return null;
+              if (!isActive && !isApiSuccess) return null;
 
               return (
                 <div
@@ -159,7 +162,7 @@ const ConvertL1 = () => {
                     L1 is Now Sovereign
                   </h3>
                   <p className="text-gray-400 text-xs">
-                    Subnet converted to sovereign L1 on RYT Mainnet
+                    Orbit converted to sovereign L1 on RYT Mainnet
                   </p>
                 </div>
               </div>

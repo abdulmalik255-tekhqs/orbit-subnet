@@ -28,24 +28,40 @@ const WizardLayout = () => {
 
   useEffect(() => {
     const path = location.pathname;
-    if (path === "/validator-owner" || path === "/") setCurrentStep(1);
-    else if (path === "/config-defaults") setCurrentStep(2);
-    else if (path === "/chain-id") setCurrentStep(3);
-    else if (path === "/bootstrap-validators") setCurrentStep(4);
-    else if (path === "/create-subnet-tx") setCurrentStep(5);
-    else if (path === "/create-chain-tx") setCurrentStep(6);
-    else if (path === "/convert-l1") setCurrentStep(7);
-    else if (path === "/deploy-vmc") setCurrentStep(8);
-    else if (path === "/initialize-vmc") setCurrentStep(9);
-    // Add more as needed
-  }, [location]);
+    let step = 1;
+    if (path === "/validator-owner" || path === "/") step = 1;
+    else if (path === "/config-defaults") step = 2;
+    else if (path === "/chain-id") step = 3;
+    else if (path === "/bootstrap-validators") step = 4;
+    else if (path === "/create-subnet-tx") step = 5;
+    else if (path === "/create-chain-tx") step = 6;
+    else if (path === "/convert-l1") step = 7;
+    else if (path === "/deploy-vmc") step = 8;
+    else if (path === "/initialize-vmc") step = 9;
+
+    if (step !== currentStep) {
+      setCurrentStep(step);
+      setIsApiSuccess(false);
+      setIsLoading(false);
+    }
+  }, [location, currentStep]);
 
   const handleRun = async () => {
     if (runAction) {
+      const startingStep = currentStep;
       setIsLoading(true);
+      setIsApiSuccess(false);
       try {
         await runAction();
-        setIsApiSuccess(true);
+
+        // If the action moved us to a new step, we don't want to mark the NEW step as success
+        // Use a functional update to get the latest currentStep
+        setCurrentStep((latestStep) => {
+          if (latestStep === startingStep) {
+            setIsApiSuccess(true);
+          }
+          return latestStep;
+        });
       } catch (error) {
         console.error("Action failed", error);
       } finally {
@@ -55,21 +71,21 @@ const WizardLayout = () => {
   };
 
   const handleNext = async () => {
-    // if (isLoading) return;
+    if (isLoading) return;
 
     // If there's a runAction for the current step, execute it first
     // We check for runAction and only proceed to navigation if it succeeds
-    // if (runAction && ![5, 6, 7, 8, 9].includes(currentStep)) {
-    //   setIsLoading(true);
-    //   try {
-    //     await runAction();
-    //   } catch (error) {
-    //     console.error("Action failed, staying on current step", error);
-    //     setIsLoading(false);
-    //     return; // Stop here if action fails
-    //   }
-    //   setIsLoading(false);
-    // }
+    if (runAction && ![5, 6, 7, 8, 9].includes(currentStep)) {
+      setIsLoading(true);
+      try {
+        await runAction();
+      } catch (error) {
+        console.error("Action failed, staying on current step", error);
+        setIsLoading(false);
+        return; // Stop here if action fails
+      }
+      setIsLoading(false);
+    }
 
     if (currentStep < totalSteps) {
       const nextStep = currentStep + 1;

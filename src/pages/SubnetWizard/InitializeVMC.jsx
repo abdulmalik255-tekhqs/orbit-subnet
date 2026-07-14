@@ -4,15 +4,20 @@ import {
   HiOutlineLightBulb,
   HiOutlineInformationCircle,
   HiCheckCircle,
-  HiRefresh,
+  HiOutlineDuplicate,
 } from "react-icons/hi";
 import { LuRocket } from "react-icons/lu";
 import { BsTrophy } from "react-icons/bs";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
+import { CopyToClipboard } from "react-copy-to-clipboard";
 
 const InitializeVMC = () => {
   const { setRunAction, isApiSuccess, isLoading } = useOutletContext();
   const [progress, setProgress] = useState(0);
   const [logs, setLogs] = useState([]);
+  const [deploymentResult, setDeploymentResult] = useState(null);
+  const dispatch = useDispatch();
 
   const allLogs = [
     "Checking bootstrap validator node sync...",
@@ -25,22 +30,49 @@ const InitializeVMC = () => {
 
   useEffect(() => {
     setRunAction(() => async () => {
-      setProgress(0);
-      setLogs([]);
+      setProgress(5);
+      setLogs(["Initiating final initialization..."]);
 
-      for (let i = 0; i < allLogs.length; i++) {
-        setLogs((prev) => [...prev, allLogs[i]]);
-        // Simulate progress increment
-        const stepProgress = 100 / allLogs.length;
-        for (let p = 0; p <= stepProgress; p += 10) {
-          setProgress((prev) => Math.min(prev + 1.5, (i + 1) * stepProgress));
-          await new Promise((r) => setTimeout(r, 100));
+      const res = await dispatch.wizard.createsubnetTx({});
+      const status = res?.state || res?.status;
+
+      if (status === "completed" || status === "success") {
+        setDeploymentResult(res);
+        setProgress(10);
+        setLogs([
+          "Orbit transaction confirmed.",
+          "Starting final deployment sequence...",
+        ]);
+
+        for (let i = 0; i < allLogs.length; i++) {
+          setLogs((prev) => [...prev, allLogs[i]]);
+          // Simulate progress increment
+          const stepProgress = 90 / allLogs.length;
+          const startProgress = 10 + i * stepProgress;
+
+          for (let p = 0; p <= stepProgress; p += 10) {
+            setProgress(
+              Math.min(startProgress + p, startProgress + stepProgress),
+            );
+            await new Promise((r) => setTimeout(r, 100));
+          }
+          await new Promise((r) => setTimeout(r, 400));
         }
-        await new Promise((r) => setTimeout(r, 500));
+        setProgress(100);
+      } else if (status === "failure" || status === "failed") {
+        const errorMsg = res?.message || "Deployment failed";
+        toast.error(errorMsg);
+        throw new Error(errorMsg);
+      } else {
+        // Fallback for pending/running or other states if we want to simulate anyway
+        // or just throw if we only proceed on completed
+        const errorMsg =
+          "Transaction is still processing. Please try again in a moment.";
+        toast.info(errorMsg);
+        throw new Error(errorMsg);
       }
-      setProgress(100);
     });
-  }, [setRunAction]);
+  }, [setRunAction, dispatch]);
 
   return (
     <div className="max-w-6xl mx-auto pb-12">
@@ -105,7 +137,7 @@ const InitializeVMC = () => {
                 >
                   <HiCheckCircle
                     className="text-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.3)]"
-                    size={16}
+                    size={18}
                   />
                   <span className="text-[12px] font-medium tracking-wide">
                     {log}
@@ -127,17 +159,67 @@ const InitializeVMC = () => {
         {/* Deployment Complete Card */}
         {isApiSuccess && (
           <div className="mt-8 animate-in zoom-in-95 duration-500">
-            <div className="p-6 rounded-2xl bg-[#0d1225]/50 border border-white/5 flex items-center gap-5">
-              <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
-                <BsTrophy className="text-purple-500 text-xl" />
+            <div className="p-6 rounded-2xl bg-[#0d1225]/50 border border-white/5 flex flex-col gap-6">
+              <div className="flex items-center gap-5">
+                <div className="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
+                  <BsTrophy className="text-purple-500 text-xl" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-white uppercase tracking-wider">
+                    Deployment Complete
+                  </h3>
+                  <p className="text-[11px] text-gray-500 mt-1">
+                    Your L1 is fully live on RYT Mainnet
+                  </p>
+                </div>
               </div>
-              <div>
-                <h3 className="text-sm font-bold text-white uppercase tracking-wider">
-                  Deployment Complete
-                </h3>
-                <p className="text-[11px] text-gray-500 mt-1">
-                  Your L1 is fully live on RYT Mainnet
-                </p>
+
+              {/* Network Details */}
+              <div className="space-y-4 pt-4 border-t border-white/5">
+                {[
+                  {
+                    label: "Blockchain ID (On-chain)",
+                    value:
+                      deploymentResult?.blockchainIdOnchain ||
+                      "FzeHzTCKuD4ZXCU8W1vE4YJ9Et3scRUaQ69m7PXmt44CukE8d",
+                  },
+                  {
+                    label: "Orbit ID (On-chain)",
+                    value:
+                      deploymentResult?.subnetIdOnchain ||
+                      "G1Qq4hpxXudSDhh9M44U7qHW8dLXxATnjdYs4ybRnCp3ud16a",
+                  },
+                  {
+                    label: "RPC Endpoint",
+                    value:
+                      deploymentResult?.rpcEndpoints?.[0] ||
+                      "https://rpc.ryt.network/l1/mainnet",
+                  },
+                ].map((item, idx) => (
+                  <div key={idx} className="flex flex-col gap-2 group">
+                    <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+                      {item.label}
+                    </span>
+                    <div className="flex items-center justify-between gap-3 p-3 rounded-xl bg-[#060914] border border-white/5 group-hover:border-white/10 transition-colors">
+                      <code className="text-[11px] text-emerald-400 font-mono break-all leading-relaxed">
+                        {item.value}
+                      </code>
+                      <CopyToClipboard
+                        text={item.value}
+                        onCopy={() =>
+                          toast.success(`${item.label} copied!`, {
+                            position: "bottom-right",
+                            autoClose: 2000,
+                          })
+                        }
+                      >
+                        <button className="p-2 rounded-lg hover:bg-white/5 text-gray-500 hover:text-white transition-all shrink-0">
+                          <HiOutlineDuplicate size={16} />
+                        </button>
+                      </CopyToClipboard>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 
@@ -149,7 +231,7 @@ const InitializeVMC = () => {
               </div>
               <div className="space-y-2">
                 <h2 className="text-2xl font-bold text-white tracking-tight">
-                  Your Subnet is Live
+                  Your Orbit is Live
                 </h2>
                 <p className="text-gray-500 text-sm max-w-sm leading-relaxed">
                   All 9 steps completed successfully. Your RYT L1 blockchain is

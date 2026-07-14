@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { HiOutlineServer } from "react-icons/hi";
 import { BsDatabase } from "react-icons/bs";
 import { useOutletContext } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
-const ValidatorForm = ({ index }) => (
+const ValidatorForm = ({ index, data = {}, onChange }) => (
   <div className="bg-[#0f172a] border border-[#1e293b] rounded-xl p-6 mb-4">
     <div className="flex items-center gap-2 mb-6">
       <BsDatabase className="text-blue-500" size={16} />
@@ -19,6 +20,8 @@ const ValidatorForm = ({ index }) => (
         <input
           type="text"
           placeholder="NodeID-Abc123..."
+          value={data?.nodeId || ""}
+          onChange={(e) => onChange(index, "nodeId", e.target.value)}
           className="w-full bg-[#0a0f1d] border border-[#1e293b] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-600 transition-colors"
         />
       </div>
@@ -28,12 +31,12 @@ const ValidatorForm = ({ index }) => (
         </label>
         <input
           type="text"
-          defaultValue="100"
+          value={data?.weight || ""}
+          onChange={(e) => onChange(index, "weight", e.target.value)}
           className="w-full bg-[#0a0f1d] border border-[#1e293b] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-600 transition-colors"
         />
       </div>
     </div>
-
     <div className="mb-6">
       <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">
         BLS Public Key (48 bytes)
@@ -41,6 +44,8 @@ const ValidatorForm = ({ index }) => (
       <input
         type="text"
         placeholder="0x<96 hex chars>"
+        value={data?.blsPublicKey || ""}
+        onChange={(e) => onChange(index, "blsPublicKey", e.target.value)}
         className="w-full bg-[#0a0f1d] border border-[#1e293b] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-600 transition-colors"
       />
     </div>
@@ -52,6 +57,10 @@ const ValidatorForm = ({ index }) => (
       <input
         type="text"
         placeholder="0x<192 hex chars>"
+        value={data?.blsProofOfPossession || ""}
+        onChange={(e) =>
+          onChange(index, "blsProofOfPossession", e.target.value)
+        }
         className="w-full bg-[#0a0f1d] border border-[#1e293b] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-600 transition-colors"
       />
     </div>
@@ -61,45 +70,168 @@ const ValidatorForm = ({ index }) => (
 const BootstrapValidators = () => {
   const [numValidators, setNumValidators] = useState("1");
   const [nodeOption, setNodeOption] = useState("own");
+  const [validators, setValidators] = useState([
+    {
+      nodeId: "",
+      weight: "100",
+      blsPublicKey: "",
+      blsProofOfPossession: "",
+    },
+  ]);
   const { setRunAction } = useOutletContext();
   const dispatch = useDispatch();
+  const subnetId = useSelector((state) => state.wizard.createSubnetTxID);
+
+  useEffect(() => {
+    const count = parseInt(numValidators) || 0;
+    setValidators((prev) => {
+      const next = [...prev];
+      if (count > next.length) {
+        for (let i = next.length; i < count; i++) {
+          next.push({
+            nodeId: "",
+            weight: "100",
+            blsPublicKey: "",
+            blsProofOfPossession: "",
+          });
+        }
+      } else {
+        return next.slice(0, count);
+      }
+      return next;
+    });
+  }, [numValidators]);
+
+  const handleValidatorChange = (index, field, value) => {
+    setValidators((prev) => {
+      if (!prev[index]) return prev;
+      const next = [...prev];
+      next[index] = { ...next[index], [field]: value };
+      return next;
+    });
+  };
 
   useEffect(() => {
     setRunAction(() => async () => {
+      const count = parseInt(numValidators);
+      if (isNaN(count) || count < 1) {
+        const errorMsg =
+          "Please enter a valid number of validators (at least 1).";
+        toast.error(errorMsg);
+        throw new Error(errorMsg);
+      }
+
+      if (nodeOption === "own") {
+        const isValid = validators.every(
+          (v) =>
+            v.nodeId.trim() !== "" &&
+            v.weight.trim() !== "" &&
+            v.blsPublicKey.trim() !== "" &&
+            v.blsProofOfPossession.trim() !== "",
+        );
+
+        if (!isValid) {
+          const errorMsg = "Please fill in all validator fields.";
+          toast.error(errorMsg);
+          throw new Error(errorMsg);
+        }
+      }
+
       let payload = {
-        network: "local",
-        walletId: "",
-        numNodes: Number(numValidators),
+        network: "private",
+        walletName: "rytkey",
+        avalanchegoVersion: "v1.13.5",
+        useLedger: false,
+        ledgerAddresses: [],
         subnetOnly: false,
         convertOnly: false,
-        controlKeys: [],
-        threshold: 0,
-        sameControlKey: false,
-        bootstrapValidators: {
-          mode: "auto",
-          count: 0,
-          endpoints: [],
-          balanceAvax: Number(numValidators),
-          weight: 0,
+        subnetId: subnetId || "",
+        outputTxPath: "",
+        mainnetChainId: 0,
+        numNodes: count,
+        nonSov: {
+          sameControlKey: true,
+          threshold: 0,
+          controlKeys: [],
+          subnetAuthKeys: [],
         },
-        interchainMessaging: {
+        bootstrapValidators: {
+          validators: validators.map((v) => ({
+            nodeId: v.nodeId,
+            weight: Number(v.weight),
+            balance: 1000000000,
+            blsPublicKey: v.blsPublicKey,
+            blsProofOfPossession: v.blsProofOfPossession,
+            changeOwnerAddr: "",
+          })),
+          jsonFilePath: "",
+          generateNodeId: nodeOption === "generate",
+          bootstrapEndpoints: [],
+          numBootstrapValidators: count,
+          deployBalanceAvax: 0,
+          deployWeight: 0,
+          changeOwnerAddress: "",
+        },
+        localMachine: {
+          useLocalMachine: null,
+          partialSync: null,
+          nodeBinaryPath: "",
+          httpPorts: [],
+          stakingPorts: [],
+          stakingTlsKeyPaths: [],
+          stakingCertKeyPaths: [],
+          stakingSignerKeyPaths: [],
+        },
+        icm: {
           skipIcmDeploy: false,
-          skipRelayerDeploy: false,
+          skipRelayer: true,
+          icmVersion: "",
+          relayerVersion: "",
+          relayerBinPath: "",
+          relayerLogLevel: "",
+          relayerAmount: 0,
+          relayerKeyName: "",
+          icmKeyName: "",
+          cchainIcmKeyName: "",
+          relayCchain: null,
+          cchainFundingKey: "",
+          relayerAllowPrivateIps: null,
+          messengerContractAddressPath: "",
+          messengerDeployerAddressPath: "",
+          messengerDeployerTxPath: "",
+          registryBytecodePath: "",
+        },
+        vmc: {
+          atL1: true,
+          blockchainName: "",
+          cChain: false,
+          blockchainId: "",
+          privateKey: "",
+          privateKeyName: "",
+          useGenesisKey: false,
         },
         proofOfStake: {
           minimumStakeAmount: 0,
-          maximumStakeAmount: 1000,
-          minimumDelegationFeeBips: 1,
-          maximumStakeMultiplier: 1,
-          weightToValueFactor: 1,
+          maximumStakeAmount: 0,
+          minimumStakeDuration: 0,
+          minimumDelegationFee: 0,
+          maximumStakeMultiplier: 0,
+          weightToValueFactor: 0,
+        },
+        signatureAggregator: {
+          logLevel: "",
+          logToStdout: false,
+          endpoint: "",
+          version: "",
         },
       };
 
-      await dispatch.wizard.bootstrapValidators({ payload });
+      console.log("Bootstrap Validators Payload:", payload);
+      await dispatch.wizard.bootstrapValidators(payload);
     });
 
     return () => setRunAction(null);
-  }, [numValidators, nodeOption, dispatch, setRunAction]);
+  }, [numValidators, nodeOption, validators, dispatch, setRunAction, subnetId]);
   return (
     <div className="max-w-6xl mx-auto pb-12">
       <div className="flex items-start gap-4 mb-4">
@@ -190,8 +322,13 @@ const BootstrapValidators = () => {
       </div>
 
       <div className="max-w-2xl">
-        {[...Array(parseInt(numValidators) || 0)].map((_, i) => (
-          <ValidatorForm key={i} index={i} />
+        {validators.map((data, i) => (
+          <ValidatorForm
+            key={i}
+            index={i}
+            data={data}
+            onChange={handleValidatorChange}
+          />
         ))}
       </div>
     </div>
