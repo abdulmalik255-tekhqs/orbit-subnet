@@ -50,7 +50,7 @@ const ConvertL1 = () => {
           if (next >= 100) {
             clearInterval(timer);
             setActiveStep(5); // All done
-            toast.success("Orbit converted to L1 successfully!");
+            toast.success("Orbit converted  successfully!");
             setTimeout(() => {
               navigate("/deploy-vmc");
               resolve();
@@ -103,8 +103,8 @@ const ConvertL1 = () => {
             This action is IRREVERSIBLE
           </h4>
           <p className="text-gray-400 text-[13px] leading-relaxed">
-            Once converted, this orbit becomes a sovereign L1. You cannot revert
-            to a standard orbit. All bootstrap validators will be permanently
+            Once converted, this orbit becomes a sovereign. You cannot revert to
+            a standard orbit. All bootstrap validators will be permanently
             registered. Please confirm you have backed up your sidecar.json and
             genesis.json files.
           </p>
@@ -159,10 +159,10 @@ const ConvertL1 = () => {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-white mb-0.5">
-                    L1 is Now Sovereign
+                    Orbit is Now Sovereign
                   </h3>
                   <p className="text-gray-400 text-xs">
-                    Orbit converted to sovereign L1 on RYT Mainnet
+                    Orbit converted to sovereign on RYT Mainnet
                   </p>
                 </div>
               </div>
@@ -173,7 +173,7 @@ const ConvertL1 = () => {
                     Status
                   </span>
                   <span className="text-green-500 text-[11px] font-bold uppercase tracking-wider bg-green-500/10 px-2 py-0.5 rounded border border-green-500/20">
-                    Sovereign L1 Active
+                    Sovereign Orbit Active
                   </span>
                 </div>
                 <div className="flex justify-between items-center">

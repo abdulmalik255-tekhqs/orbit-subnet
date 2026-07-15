@@ -11,6 +11,16 @@ import { BsTrophy } from "react-icons/bs";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { CopyToClipboard } from "react-copy-to-clipboard";
+import confetti from "canvas-confetti";
+
+const allLogs = [
+  "Checking bootstrap validator node sync...",
+  "Waiting for Orbit EVM to produce blocks (30-60s)...",
+  "Starting Signature Aggregator...",
+  "Collecting BLS signatures from validators...",
+  "Calling initialize() on VMC proxy...",
+  "Finalizing deployment state...",
+];
 
 const InitializeVMC = () => {
   const { setRunAction, isApiSuccess, isLoading } = useOutletContext();
@@ -18,15 +28,6 @@ const InitializeVMC = () => {
   const [logs, setLogs] = useState([]);
   const [deploymentResult, setDeploymentResult] = useState(null);
   const dispatch = useDispatch();
-
-  const allLogs = [
-    "Checking bootstrap validator node sync...",
-    "Waiting for L1 EVM to produce blocks (30-60s)...",
-    "Starting Signature Aggregator...",
-    "Collecting BLS signatures from validators...",
-    "Calling initialize() on VMC proxy...",
-    "Finalizing deployment state...",
-  ];
 
   useEffect(() => {
     setRunAction(() => async () => {
@@ -73,6 +74,43 @@ const InitializeVMC = () => {
       }
     });
   }, [setRunAction, dispatch]);
+
+  useEffect(() => {
+    if (isApiSuccess) {
+      const duration = 3 * 1000;
+      const animationEnd = Date.now() + duration;
+      const defaults = {
+        startVelocity: 30,
+        spread: 360,
+        ticks: 60,
+        zIndex: 99,
+      };
+
+      const randomInRange = (min, max) => Math.random() * (max - min) + min;
+
+      const interval = setInterval(function () {
+        const timeLeft = animationEnd - Date.now();
+
+        if (timeLeft <= 0) {
+          return clearInterval(interval);
+        }
+
+        const particleCount = 50 * (timeLeft / duration);
+        confetti({
+          ...defaults,
+          particleCount,
+          origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+        });
+        confetti({
+          ...defaults,
+          particleCount,
+          origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+        });
+      }, 250);
+
+      return () => clearInterval(interval);
+    }
+  }, [isApiSuccess]);
 
   return (
     <div className="max-w-6xl mx-auto pb-12">
@@ -169,7 +207,7 @@ const InitializeVMC = () => {
                     Deployment Complete
                   </h3>
                   <p className="text-[11px] text-gray-500 mt-1">
-                    Your L1 is fully live on RYT Mainnet
+                    Your Orbit is fully live on RYT Mainnet
                   </p>
                 </div>
               </div>
@@ -188,12 +226,6 @@ const InitializeVMC = () => {
                     value:
                       deploymentResult?.subnetIdOnchain ||
                       "G1Qq4hpxXudSDhh9M44U7qHW8dLXxATnjdYs4ybRnCp3ud16a",
-                  },
-                  {
-                    label: "RPC Endpoint",
-                    value:
-                      deploymentResult?.rpcEndpoints?.[0] ||
-                      "https://rpc.ryt.network/l1/mainnet",
                   },
                 ].map((item, idx) => (
                   <div key={idx} className="flex flex-col gap-2 group">
@@ -222,7 +254,6 @@ const InitializeVMC = () => {
                 ))}
               </div>
             </div>
-
             {/* Final Success Hero */}
             <div className="mt-16 flex flex-col items-center justify-center text-center space-y-6">
               <div className="w-20 h-20 rounded-3xl bg-[#0d1225] border border-blue-500/20 flex items-center justify-center shadow-[0_0_40px_rgba(37,99,235,0.1)] relative group">
@@ -234,8 +265,8 @@ const InitializeVMC = () => {
                   Your Orbit is Live
                 </h2>
                 <p className="text-gray-500 text-sm max-w-sm leading-relaxed">
-                  All 9 steps completed successfully. Your RYT L1 blockchain is
-                  now operational on Mainnet with sovereign validator
+                  All 9 steps completed successfully. Your RYT Orbit blockchain
+                  is now operational on Mainnet with sovereign validator
                   management.
                 </p>
               </div>

@@ -113,7 +113,7 @@ const CreateSubnetTx = () => {
         </svg>
 
         <p className="text-sm leading-6 text-gray-400">
-          This transaction registers your orbit with sovereign L1 control.
+          This transaction registers your orbit with sovereign Orbit control.
           Threshold is <span className="text-gray-200">1-of-1</span> for
           sovereign deployment. Control keys are auto-set from your Ledger.
         </p>

@@ -41,7 +41,7 @@ const ValidatorOwner = () => {
           </h1>
           <p className="text-gray-400 text-sm">
             This EVM address will have admin control over the ValidatorManager
-            contract — it can add or remove validators once the L1 is live.
+            contract — it can add or remove validators once the Orbit is live.
           </p>
         </div>
       </div>

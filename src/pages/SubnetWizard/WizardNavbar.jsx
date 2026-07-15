@@ -21,13 +21,33 @@ const WizardNavbar = ({ currentStep, onRun, isLoading, isApiSuccess }) => {
 
       <div className="absolute left-1/2 -translate-x-1/2 flex items-center gap-4">
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-blue-600/50 bg-blue-600/10 text-blue-400 text-xs font-bold ring-1 ring-blue-600/20">
+          {/* Phase 1: CREATE */}
+          <div className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-blue-600/50 bg-blue-600/10 text-blue-400 text-xs font-bold ring-1 ring-blue-600/20 shadow-[0_0_10px_rgba(37,99,235,0.2)] transition-all duration-500">
             <VscGitPullRequestCreate size={14} className="mt-0.5" />
             CREATE
           </div>
-          <div className="w-20 h-[1px] bg-gradient-to-r from-blue-600/50 to-gray-700"></div>
-          <div className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-gray-800 bg-gray-900/50 text-gray-500 text-xs font-bold">
-            <HiOutlineKey size={14} />
+
+          {/* Connector Line with sliding animation */}
+          <div className="w-20 h-[1px] relative bg-gray-700/50 overflow-hidden">
+            <div
+              className={`absolute inset-0 bg-gradient-to-r from-blue-600 to-cyan-400 transition-transform duration-1000 ease-in-out ${
+                currentStep >= 4 ? "translate-x-0" : "-translate-x-full"
+              }`}
+            />
+          </div>
+
+          {/* Phase 2: DEPLOY */}
+          <div
+            className={`flex items-center gap-2 px-4 py-1.5 rounded-full border transition-all duration-500 text-xs font-bold ${
+              currentStep >= 4
+                ? "border-blue-600/50 bg-blue-600/10 text-blue-400 ring-1 ring-blue-600/20 shadow-[0_0_10px_rgba(37,99,235,0.2)]"
+                : "border-gray-800 bg-gray-900/50 text-gray-500"
+            }`}
+          >
+            <HiOutlineKey
+              size={14}
+              className={currentStep >= 4 ? "animate-pulse" : ""}
+            />
             DEPLOY
           </div>
         </div>

@@ -21,7 +21,11 @@ const WizardFooter = ({
       <div className="flex items-center justify-between w-full mx-auto">
         <button
           onClick={onBack}
-          disabled={currentStep === 1 || isLoading}
+          disabled={
+            currentStep === 1 ||
+            isLoading ||
+            (currentStep === 9 && isApiSuccess)
+          }
           className="flex items-center gap-2 px-6 py-2.5 rounded-lg border border-[#1e293b] text-gray-400 hover:text-white hover:border-gray-500 disabled:opacity-30 disabled:cursor-not-allowed transition-all text-[11px] font-bold uppercase tracking-wide"
         >
           <HiArrowLeft />

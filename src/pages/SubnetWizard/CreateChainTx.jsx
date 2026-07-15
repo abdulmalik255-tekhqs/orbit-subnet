@@ -67,8 +67,8 @@ const CreateChainTx = () => {
         <div>
           <h1 className="text-2xl font-bold text-white ">CreateChainTx</h1>
           <p className="text-gray-400 text-sm max-w-2xl leading-relaxed font-normal">
-            Create your sovereign L1 chain on the newly created Orbit. This step
-            registers the chain infrastructure and initial genesis state.
+            Create your sovereign Orbit chain on the newly created Orbit. This
+            step registers the chain infrastructure and initial genesis state.
           </p>
         </div>
       </div>

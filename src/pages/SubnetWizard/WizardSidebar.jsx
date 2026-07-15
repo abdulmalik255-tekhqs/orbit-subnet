@@ -7,7 +7,7 @@ const steps = [
   { id: 4, title: "Bootstrap Validators", phase: "DEPLOY" },
   { id: 5, title: "CreateSubnetTx", phase: "DEPLOY" },
   { id: 6, title: "CreateChainTx", phase: "DEPLOY" },
-  { id: 7, title: "Convert to L1", phase: "DEPLOY" },
+  { id: 7, title: "Convert to Orbit", phase: "DEPLOY" },
   { id: 8, title: "Deploy VMC", phase: "DEPLOY" },
   { id: 9, title: "Initialize VMC", phase: "DEPLOY" },
 ];

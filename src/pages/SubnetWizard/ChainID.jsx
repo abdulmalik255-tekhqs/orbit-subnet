@@ -104,7 +104,7 @@ const ChainID = () => {
           <span className="font-bold">Mainnet rules:</span> Use a different
           Chain ID than your testnet deployment to prevent replay attacks. The
           CLI will warn if a conflict is detected. A separate mainnet override
-          (sidecar.SubnetEVMMainnetChainID) can be applied at deploy time.
+          (sidecar.OrbitEVMMainnetChainID) can be applied at deploy time.
         </p>
       </div>
 
@@ -122,7 +122,7 @@ const ChainID = () => {
             Mainnet override
           </span>
           <span className="text-gray-400 text-[11px] font-mono text-right">
-            sidecar.SubnetEVMMainnetChainID
+            sidecar.OrbitEVMMainnetChainID
           </span>
         </div>
       </div>
