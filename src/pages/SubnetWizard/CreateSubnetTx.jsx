@@ -12,10 +12,10 @@ const CreateSubnetTx = () => {
   const navigate = useNavigate();
 
   const steps = [
-    "Submitting CreateSubnetTx...",
+    "Submitting CreateOrbitTx...",
     "Waiting for confirmation...",
     "Signing transaction with Ledger...",
-    "Extracting SubnetID from transaction...",
+    "Extracting OrbitID from transaction...",
     "Storing in sidecar.json...",
   ];
 
@@ -84,7 +84,7 @@ const CreateSubnetTx = () => {
           <HiOutlineDocumentText size={24} />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-white ">CreateSubnetTx</h1>
+          <h1 className="text-2xl font-bold text-white ">Create OrbitTx</h1>
           <p className="text-gray-400 text-sm max-w-2xl leading-relaxed font-normal">
             Register the orbit on the RYT Chain. This is an automatic step — the
             CLI submits the transaction. Ledger approval required.

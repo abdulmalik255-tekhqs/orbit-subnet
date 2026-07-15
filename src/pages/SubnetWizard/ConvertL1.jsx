@@ -15,8 +15,8 @@ const ConvertL1 = () => {
   const navigate = useNavigate();
 
   const steps = [
-    "Submitting ConvertSubnetToL1Tx...",
-    "Waiting for P-Chain finalization (~30s)...",
+    "Submitting Convert to Orbit...",
+    "Waiting for finalization (~30s)...",
     "Registering bootstrap validators...",
     "Assigning ValidationIDs...",
     "Storing results in sidecar.json...",
