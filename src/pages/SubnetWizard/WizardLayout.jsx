@@ -19,7 +19,7 @@ const WizardLayout = () => {
     2: "/config-defaults",
     3: "/chain-id",
     4: "/bootstrap-validators",
-    5: "/create-subnet-tx",
+    5: "/create-orbit-tx",
     6: "/create-chain-tx",
     7: "/convert-l1",
     8: "/deploy-vmc",
@@ -33,7 +33,7 @@ const WizardLayout = () => {
     else if (path === "/config-defaults") step = 2;
     else if (path === "/chain-id") step = 3;
     else if (path === "/bootstrap-validators") step = 4;
-    else if (path === "/create-subnet-tx") step = 5;
+    else if (path === "/create-orbit-tx") step = 5;
     else if (path === "/create-chain-tx") step = 6;
     else if (path === "/convert-l1") step = 7;
     else if (path === "/deploy-vmc") step = 8;
