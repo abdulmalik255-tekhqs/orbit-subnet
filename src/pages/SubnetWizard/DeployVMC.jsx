@@ -15,7 +15,7 @@ const DeployVMC = () => {
   const [activeStep, setActiveStep] = useState(0);
 
   const steps = [
-    "Deploying ValidatorManager implementation...",
+    "Deploying Validator Manager implementation...",
     "Deploying ProxyAdmin...",
     "Deploying TransparentProxy...",
     "Linking implementation to proxy...",

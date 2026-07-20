@@ -67,7 +67,7 @@ const ConvertL1 = () => {
           <HiOutlineLightningBolt size={24} />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-white">Convert Orbit to L1</h1>
+          <h1 className="text-2xl font-bold text-white">Convert To Orbit</h1>
           <p className="text-gray-400 text-sm max-w-3xl leading-relaxed font-normal">
             The most critical and irreversible transaction. Converts the orbit
             into a fully sovereign and registers bootstrap validators. After

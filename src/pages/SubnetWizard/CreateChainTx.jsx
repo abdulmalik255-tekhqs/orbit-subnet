@@ -9,7 +9,7 @@ const CreateChainTx = () => {
   const [activeStep, setActiveStep] = useState(0);
 
   const steps = [
-    "Submitting CreateChainTx...",
+    "Submitting Create Chain Tx...",
     "Waiting for confirmation...",
     "Signing CreateChain transaction...",
     "Extracting BlockchainID and VM ID...",

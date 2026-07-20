@@ -217,35 +217,33 @@ const InitializeVMC = () => {
                 {[
                   {
                     label: "Network Name",
-                    value: "--",
+                    value: "RytOrbit1",
                   },
                   {
                     label: "ChainID",
-                    value: "--",
+                    value: "808080",
                   },
                   {
                     label: "RPC Endpoint",
-                    value: deploymentResult?.blockchainIdOnchain
-                      ? `http://18.118.130.128:9652/ext/bc/${deploymentResult?.blockchainIdOnchain}/rpc`
-                      : "--",
+                    value: deploymentResult?.result?.blockchainIdOnchain
+                      ? `http://18.118.130.128:9652/ext/bc/${deploymentResult?.result?.blockchainIdOnchain}/rpc`
+                      : "http://18.118.130.128:9652/ext/bc/co9ZjUioEJ8iBPhEzrDmh68yEWvH6whVBYD1yJv8K9a5QAHxk/rpc",
                   },
                   {
                     label: "Blockchain ID (On-chain)",
-                    value: deploymentResult?.blockchainIdOnchain
-                      ? deploymentResult?.blockchainIdOnchain
+                    value: deploymentResult?.result?.blockchainIdOnchain
+                      ? deploymentResult?.result?.blockchainIdOnchain
                       : "--",
                   },
                   {
                     label: "Orbit ID (On-chain)",
-                    value: deploymentResult?.subnetIdOnchain
-                      ? deploymentResult?.subnetIdOnchain
+                    value: deploymentResult?.result?.subnetIdOnchain
+                      ? deploymentResult?.result?.subnetIdOnchain
                       : "--",
                   },
                   {
                     label: "Orbit Explorer",
-                    value: deploymentResult?.subnetIdOnchain
-                      ? `http://18.118.130.128:9652/ext/bc/${deploymentResult?.subnetIdOnchain}/explorer`
-                      : "--",
+                    value:  "--",
                   },
                 ].map((item, idx) => (
                   <div key={idx} className="flex flex-col gap-2 group">

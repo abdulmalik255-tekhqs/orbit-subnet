@@ -11,7 +11,7 @@ const CreateSubnetTx = () => {
   const dispatch = useDispatch();
 
   const steps = [
-    "Submitting CreateOrbitTx...",
+    "Submitting Create Orbit Tx...",
     "Waiting for confirmation...",
     "Signing transaction with Ledger...",
     "Extracting OrbitID from transaction...",
