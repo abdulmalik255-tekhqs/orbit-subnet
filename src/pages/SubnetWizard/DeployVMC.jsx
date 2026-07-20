@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useOutletContext, useNavigate } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 import {
   HiOutlineDocumentText,
   HiOutlineInformationCircle,
@@ -13,7 +13,6 @@ const DeployVMC = () => {
   const [deploymentTarget, setDeploymentTarget] = useState("external");
   const [progress, setProgress] = useState(0);
   const [activeStep, setActiveStep] = useState(0);
-  const navigate = useNavigate();
 
   const steps = [
     "Deploying ValidatorManager implementation...",
@@ -51,10 +50,7 @@ const DeployVMC = () => {
             clearInterval(timer);
             setActiveStep(5);
             toast.success("VMC deployed successfully!");
-            setTimeout(() => {
-              navigate("/initialize-vmc");
-              resolve();
-            }, 500);
+            resolve();
             return 100;
           }
           return next;

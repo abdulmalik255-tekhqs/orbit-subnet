@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { useOutletContext, useNavigate } from "react-router-dom";
-import { HiOutlineLink, HiCheckCircle, HiRefresh } from "react-icons/hi";
+import { useOutletContext } from "react-router-dom";
+import { HiOutlineLink, HiCheckCircle } from "react-icons/hi";
 import { toast } from "react-toastify";
 
 const CreateChainTx = () => {
   const { setRunAction, isApiSuccess, isLoading } = useOutletContext();
   const [progress, setProgress] = useState(0);
   const [activeStep, setActiveStep] = useState(0);
-  const navigate = useNavigate();
 
   const steps = [
     "Submitting CreateChainTx...",
@@ -46,10 +45,7 @@ const CreateChainTx = () => {
             clearInterval(timer);
             setActiveStep(5); // All done
             toast.success("Chain transaction created successfully!");
-            setTimeout(() => {
-              navigate("/convert-l1");
-              resolve();
-            }, 500);
+            resolve();
             return 100;
           }
           return next;

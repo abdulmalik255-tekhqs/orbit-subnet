@@ -216,16 +216,36 @@ const InitializeVMC = () => {
               <div className="space-y-4 pt-4 border-t border-white/5">
                 {[
                   {
+                    label: "Network Name",
+                    value: "--",
+                  },
+                  {
+                    label: "ChainID",
+                    value: "--",
+                  },
+                  {
+                    label: "RPC Endpoint",
+                    value: deploymentResult?.blockchainIdOnchain
+                      ? `http://18.118.130.128:9652/ext/bc/${deploymentResult?.blockchainIdOnchain}/rpc`
+                      : "--",
+                  },
+                  {
                     label: "Blockchain ID (On-chain)",
-                    value:
-                      deploymentResult?.blockchainIdOnchain ||
-                      "FzeHzTCKuD4ZXCU8W1vE4YJ9Et3scRUaQ69m7PXmt44CukE8d",
+                    value: deploymentResult?.blockchainIdOnchain
+                      ? deploymentResult?.blockchainIdOnchain
+                      : "--",
                   },
                   {
                     label: "Orbit ID (On-chain)",
-                    value:
-                      deploymentResult?.subnetIdOnchain ||
-                      "G1Qq4hpxXudSDhh9M44U7qHW8dLXxATnjdYs4ybRnCp3ud16a",
+                    value: deploymentResult?.subnetIdOnchain
+                      ? deploymentResult?.subnetIdOnchain
+                      : "--",
+                  },
+                  {
+                    label: "Orbit Explorer",
+                    value: deploymentResult?.subnetIdOnchain
+                      ? `http://18.118.130.128:9652/ext/bc/${deploymentResult?.subnetIdOnchain}/explorer`
+                      : "--",
                   },
                 ].map((item, idx) => (
                   <div key={idx} className="flex flex-col gap-2 group">
@@ -236,19 +256,25 @@ const InitializeVMC = () => {
                       <code className="text-[11px] text-emerald-400 font-mono break-all leading-relaxed">
                         {item.value}
                       </code>
-                      <CopyToClipboard
-                        text={item.value}
-                        onCopy={() =>
-                          toast.success(`${item.label} copied!`, {
-                            position: "bottom-right",
-                            autoClose: 2000,
-                          })
-                        }
-                      >
-                        <button className="p-2 rounded-lg hover:bg-white/5 text-gray-500 hover:text-white transition-all shrink-0">
-                          <HiOutlineDuplicate size={16} />
-                        </button>
-                      </CopyToClipboard>
+
+                      {[
+                        "Blockchain ID (On-chain)",
+                        "Orbit ID (On-chain)",
+                      ].includes(item.label) && (
+                        <CopyToClipboard
+                          text={item.value}
+                          onCopy={() =>
+                            toast.success(`${item.label} copied!`, {
+                              position: "bottom-right",
+                              autoClose: 2000,
+                            })
+                          }
+                        >
+                          <button className="p-2 rounded-lg hover:bg-white/5 text-gray-500 hover:text-white transition-all shrink-0">
+                            <HiOutlineDuplicate size={16} />
+                          </button>
+                        </CopyToClipboard>
+                      )}
                     </div>
                   </div>
                 ))}

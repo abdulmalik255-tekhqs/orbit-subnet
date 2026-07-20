@@ -271,7 +271,7 @@ const BootstrapValidators = () => {
         />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 max-w-2xl">
+      <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mb-4 max-w-2xl">
         <div
           onClick={() => setNodeOption("own")}
           className={`cursor-pointer rounded-xl p-6 border transition-all ${
@@ -299,7 +299,7 @@ const BootstrapValidators = () => {
           </div>
         </div>
 
-        <div
+        {/* <div
           onClick={() => setNodeOption("generate")}
           className={`cursor-pointer rounded-xl p-6 border border-[#1e293b] hover:border-gray-700 transition-all ${
             nodeOption === "generate"
@@ -318,7 +318,7 @@ const BootstrapValidators = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
 
       <div className="max-w-2xl">

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useOutletContext, useNavigate } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 import {
   HiCheckCircle,
   HiOutlineLightningBolt,
@@ -12,7 +12,6 @@ const ConvertL1 = () => {
   const { setRunAction, isApiSuccess, isLoading } = useOutletContext();
   const [progress, setProgress] = useState(0);
   const [activeStep, setActiveStep] = useState(0);
-  const navigate = useNavigate();
 
   const steps = [
     "Submitting Convert to Orbit...",
@@ -51,10 +50,7 @@ const ConvertL1 = () => {
             clearInterval(timer);
             setActiveStep(5); // All done
             toast.success("Orbit converted  successfully!");
-            setTimeout(() => {
-              navigate("/deploy-vmc");
-              resolve();
-            }, 500);
+            resolve();
             return 100;
           }
           return next;
@@ -151,7 +147,7 @@ const ConvertL1 = () => {
           </div>
 
           {/* Result Card */}
-          {isApiSuccess && (
+          {/* {isApiSuccess && (
             <div className="mt-8 bg-[#0f172a] border border-blue-500/20 rounded-xl overflow-hidden animate-in fade-in zoom-in-95 duration-700">
               <div className="p-6 flex items-start gap-4 border-b border-[#1e293b]/50">
                 <div className="w-12 h-12 bg-purple-600/10 rounded-lg border border-purple-500/20 flex items-center justify-center text-purple-500">
@@ -194,7 +190,7 @@ const ConvertL1 = () => {
                 </div>
               </div>
             </div>
-          )}
+          )} */}
         </div>
       ) : null}
     </div>

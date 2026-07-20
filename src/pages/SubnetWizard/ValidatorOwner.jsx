@@ -36,9 +36,7 @@ const ValidatorOwner = () => {
           <LuKey size={24} />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-white">
-            Validator Manager Owner
-          </h1>
+          <h1 className="text-2xl font-bold text-white">Orbit Creator</h1>
           <p className="text-gray-400 text-sm">
             This EVM address will have admin control over the ValidatorManager
             contract — it can add or remove validators once the Orbit is live.
@@ -52,7 +50,7 @@ const ValidatorOwner = () => {
         </span>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+      {/* <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
         {selectionCards.map((card) => (
           <div
             key={card.id}
@@ -97,7 +95,7 @@ const ValidatorOwner = () => {
             </p>
           </div>
         ))}
-      </div>
+      </div> */}
 
       {method === "manual" && (
         <div className="mb-8 animate-in fade-in slide-in-from-top-2 duration-300">

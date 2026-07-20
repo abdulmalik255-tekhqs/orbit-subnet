@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useOutletContext, useNavigate } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 import { HiOutlineDocumentText, HiCheckCircle } from "react-icons/hi";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
@@ -9,7 +9,6 @@ const CreateSubnetTx = () => {
   const [progress, setProgress] = useState(0);
   const [activeStep, setActiveStep] = useState(0);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const steps = [
     "Submitting CreateOrbitTx...",
@@ -60,10 +59,7 @@ const CreateSubnetTx = () => {
               clearInterval(timer);
               setActiveStep(5); // All done
               toast.success("Orbit transaction created successfully!");
-              setTimeout(() => {
-                navigate("/create-chain-tx");
-                resolve();
-              }, 500);
+              resolve();
               return 100;
             }
             return next;
@@ -84,7 +80,7 @@ const CreateSubnetTx = () => {
           <HiOutlineDocumentText size={24} />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-white ">Create OrbitTx</h1>
+          <h1 className="text-2xl font-bold text-white ">Create Orbit Tx</h1>
           <p className="text-gray-400 text-sm max-w-2xl leading-relaxed font-normal">
             Register the orbit on the RYT Chain. This is an automatic step — the
             CLI submits the transaction. Ledger approval required.

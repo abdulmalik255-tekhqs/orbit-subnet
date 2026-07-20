@@ -11,7 +11,7 @@ const ConfigDefaults = () => {
       id: "test",
       title: "Test Environment",
       description:
-        "1M tokens to ewoq test address, low gas, constant fees, ICM enabled, open permissions.",
+        "1M tokens to ewoq test address, constant fees, ICM enabled, open permissions.",
       icon: <TbFlask2 size={24} />,
       badge: "Fast setup",
       badgeColor: "text-blue-400 bg-blue-900/40 border-none",
@@ -20,7 +20,7 @@ const ConfigDefaults = () => {
       id: "production",
       title: "Production Environment",
       description:
-        "1M tokens to newly created key, low gas, constant fees, ICM enabled, open permissions.",
+        "1M tokens to newly created key, constant fees, ICM enabled, open permissions.",
       icon: <MdOutlineFactory size={24} />,
       badge: "Recommended",
       badgeColor: "text-green-500 bg-green-900/40 border-none",

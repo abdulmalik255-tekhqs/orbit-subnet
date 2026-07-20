@@ -11,6 +11,7 @@ const ChainID = () => {
   const [chainId, setChainId] = useState();
   const [networkName, setNetworkName] = useState("");
   const [symbol, setSymbol] = useState("");
+  const [description, setDescription] = useState("");
 
   useEffect(() => {
     setRunAction(() => async () => {
@@ -27,6 +28,7 @@ const ChainID = () => {
         networkName,
         chainId,
         tokenSymbol: symbol,
+        description,
       });
     });
 
@@ -54,7 +56,7 @@ const ChainID = () => {
           Required
         </span>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-2">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-2">
         <div className="w-full mb-2">
           <label className="block text-[12px] font-bold text-gray-400 uppercase tracking-wider mb-[2px]">
             Network Name <span className="text-red-500">*</span>
@@ -79,17 +81,30 @@ const ChainID = () => {
             className="w-full bg-[#0a0f1d] border border-[#1e293b] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-600 transition-colors"
           />
         </div>
-      </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-2">
-        <div className="w-full  mb-2">
+        <div className="w-full mb-2">
           <label className="block text-[12px] font-bold text-gray-400 uppercase tracking-wider mb-[2px]">
-            Token Symbol <span className="text-red-500">*</span>
+            Token Symbol
           </label>
           <input
             placeholder="MYTKN"
             type="text"
             value={symbol}
             onChange={(e) => setSymbol(e.target.value.toUpperCase())}
+            className="w-full bg-[#0a0f1d] border border-[#1e293b] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-600 transition-colors"
+          />
+        </div>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-1 gap-6 mb-2">
+        <div className="w-full mb-2">
+          <label className="block text-[12px] font-bold text-gray-400 uppercase tracking-wider mb-[2px]">
+            Description (Optional)
+          </label>
+          <textarea
+            placeholder="Added to the genesis config as a comment for reference."
+            as="textarea"
+            rows={4}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
             className="w-full bg-[#0a0f1d] border border-[#1e293b] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-600 transition-colors"
           />
         </div>
@@ -103,12 +118,13 @@ const ChainID = () => {
         <p className="text-blue-400/90 text-[13px] leading-relaxed">
           <span className="font-bold">Mainnet rules:</span> Use a different
           Chain ID than your testnet deployment to prevent replay attacks. The
-          CLI will warn if a conflict is detected. A separate mainnet override
-          (sidecar.OrbitEVMMainnetChainID) can be applied at deploy time.
+          CLI will warn if a conflict is detected.
+          {/* A separate mainnet override
+          (sidecar.OrbitEVMMainnetChainID) can be applied at deploy time. */}
         </p>
       </div>
 
-      <div className="bg-[#0a0f1d] border border-[#1e293b] rounded-lg overflow-hidden max-w-md">
+      {/* <div className="bg-[#0a0f1d] border border-[#1e293b] rounded-lg overflow-hidden max-w-md">
         <div className="grid grid-cols-2 p-4 border-b border-[#1e293b]/50">
           <span className="text-gray-500 text-[11px] font-medium">
             Stored as
@@ -125,7 +141,7 @@ const ChainID = () => {
             sidecar.OrbitEVMMainnetChainID
           </span>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
