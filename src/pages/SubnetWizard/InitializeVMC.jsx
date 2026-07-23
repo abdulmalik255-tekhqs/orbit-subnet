@@ -243,7 +243,7 @@ const InitializeVMC = () => {
                   },
                   {
                     label: "Orbit Explorer",
-                    value:  "--",
+                    value: "http://3.129.128.112:3009/",
                   },
                 ].map((item, idx) => (
                   <div key={idx} className="flex flex-col gap-2 group">
@@ -251,13 +251,27 @@ const InitializeVMC = () => {
                       {item.label}
                     </span>
                     <div className="flex items-center justify-between gap-3 p-3 rounded-xl bg-[#060914] border border-white/5 group-hover:border-white/10 transition-colors">
-                      <code className="text-[11px] text-emerald-400 font-mono break-all leading-relaxed">
-                        {item.value}
-                      </code>
+                      {item.label === "Orbit Explorer" ? (
+                        <a
+                          href={item.value}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-[11px] text-emerald-400 font-mono break-all leading-relaxed hover:underline decoration-emerald-400/30"
+                        >
+                          {item.value}
+                        </a>
+                      ) : (
+                        <code className="text-[11px] text-emerald-400 font-mono break-all leading-relaxed">
+                          {item.value}
+                        </code>
+                      )}
 
                       {[
+                        "ChainID",
+                        "RPC Endpoint",
                         "Blockchain ID (On-chain)",
                         "Orbit ID (On-chain)",
+                        "Orbit Explorer",
                       ].includes(item.label) && (
                         <CopyToClipboard
                           text={item.value}

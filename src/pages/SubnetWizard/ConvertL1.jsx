@@ -5,7 +5,6 @@ import {
   HiOutlineLightningBolt,
   HiExclamation,
 } from "react-icons/hi";
-import { RiCopperDiamondLine } from "react-icons/ri";
 import { toast } from "react-toastify";
 
 const ConvertL1 = () => {
@@ -17,7 +16,7 @@ const ConvertL1 = () => {
     "Submitting Convert to Orbit...",
     "Waiting for finalization (~30s)...",
     "Registering bootstrap validators...",
-    "Assigning ValidationIDs...",
+    "Assigning Validation IDs...",
     "Storing results in sidecar.json...",
   ];
 

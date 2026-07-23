@@ -14,7 +14,7 @@ const CreateSubnetTx = () => {
     "Submitting Create Orbit Tx...",
     "Waiting for confirmation...",
     "Signing transaction with Ledger...",
-    "Extracting OrbitID from transaction...",
+    "Extracting Orbit ID from transaction...",
     "Storing in sidecar.json...",
   ];
 

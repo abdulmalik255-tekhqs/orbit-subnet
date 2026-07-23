@@ -11,8 +11,8 @@ const CreateChainTx = () => {
   const steps = [
     "Submitting Create Chain Tx...",
     "Waiting for confirmation...",
-    "Signing CreateChain transaction...",
-    "Extracting BlockchainID and VM ID...",
+    "Signing Create Chain transaction...",
+    "Extracting Blockchain ID and VM ID...",
     "Storing in sidecar.json...",
   ];
 

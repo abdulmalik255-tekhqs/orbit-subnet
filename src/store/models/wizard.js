@@ -93,8 +93,8 @@ const wizard = {
             enableDebugging: true,
             initialTokenAllocation: [
               {
-                address: "0xCA3fd9482efC96A4CADf2e67047513D2BE94d2dB",
-                amount: 1000000,
+                address: "0xDA9626732F2290d2BC0bc02755F03f12b29dBaf9",
+                amount: 100000000,
               },
             ],
           };

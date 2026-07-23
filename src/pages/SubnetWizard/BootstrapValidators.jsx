@@ -158,6 +158,8 @@ const BootstrapValidators = () => {
         bootstrapValidators: {
           validators: validators.map((v) => ({
             nodeId: v.nodeId,
+            service: "rytNode1.service",
+            configFile: "/home/admin/testNetwork/config/node1.json",
             weight: Number(v.weight),
             balance: 1000000000,
             blsPublicKey: v.blsPublicKey,
