@@ -1,4 +1,4 @@
-import axiosInstance from "../../api/axios";
+import axiosInstance, { dockerInstance } from "../../api/axios";
 import { toast } from "react-toastify";
 
 const wizard = {
@@ -69,10 +69,11 @@ const wizard = {
           // Step 2: Create orbit (if availability check passes)
           const createPayload = {
             networkName: payload.networkName,
+            description: payload.description || "",
             vm: {
               type: "subnet_evm",
               chainId: payload.chainId,
-              tokenSymbol: payload.tokenSymbol || "MGT",
+              tokenSymbol: payload.tokenSymbol || "",
               version: "latest",
               defaults: "production",
             },
@@ -122,7 +123,6 @@ const wizard = {
     },
     async bootstrapValidators(payload, rootState) {
       dispatch.wizard.setLoading(true);
-      console.log("Bootstrapping validators with payload:", payload);
       try {
         const response = await axiosInstance.post(
           `/subnets/${rootState.wizard.createSubnetTxID}/deploy`,
@@ -230,18 +230,61 @@ const wizard = {
         dispatch.wizard.setLoading(false);
       }
     },
-    async initializeVMC(payload, rootState) {
+    async initializeOrbitDeployment(payload, rootState) {
       dispatch.wizard.setLoading(true);
       try {
-        const response = await axiosInstance.post(
-          `/subnets/${payload.subnetId}/initialize-vmc`,
-          payload,
+        const response = await axiosInstance.get(
+          `/jobs/${rootState.wizard.deployedBootstrapValidatorID}`,
         );
-        dispatch.wizard.updateStepData({
-          step: "vmc",
-          data: response.data,
-        });
-        return response.data;
+        if (response && (response.status === 200 || response.data)) {
+          // Failure handling
+          if (response?.data?.status === "failed") {
+            toast.error(response?.data?.errorMessage || "Deployment failed");
+            dispatch.wizard.resetWizard();
+            window.location.href = "/";
+            return;
+          }
+
+          if (
+            response?.data?.state === "pending" ||
+            response?.data?.status === "pending"
+          ) {
+            toast.success("Orbit transaction created successfully!");
+          }
+          console.log("Create subnet transaction response:", response);
+          try {
+            const result =
+              response?.data?.data?.result || response?.data?.result;
+            if (!result) {
+              console.warn("No result data found in response");
+              return;
+            }
+            const dockerPayload = {
+              vmType: "subnet-evm",
+              vmId: result?.vmId,
+              name: result?.subnetName,
+              description: result?.subnetDescription,
+              orbitId: result?.subnetIdOnchain,
+              rpc: result?.rpcEndpoint,
+              chainId: result?.chainId,
+              blockChainId: result?.blockchainIdOnchain,
+            };
+            console.log("Docker deployment payload:", dockerPayload);
+            const res = await dockerInstance.post(
+              `/docker/deployIndexer`,
+              dockerPayload,
+            );
+            if (res && (res.status === 200 || res.status === 201 || res.data)) {
+              dispatch.wizard.updateStepData({
+                step: "subnet",
+                data: response.data,
+              });
+              return response.data;
+            }
+          } catch (error) {
+            toast.error(error?.response?.data?.message || error.message);
+          }
+        }
       } catch (error) {
         toast.error(error?.response?.data?.message || error.message);
         dispatch.wizard.setError(error.message);

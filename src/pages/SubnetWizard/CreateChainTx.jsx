@@ -2,19 +2,12 @@ import React, { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 import { HiOutlineLink, HiCheckCircle } from "react-icons/hi";
 import { toast } from "react-toastify";
+import { createChainTxSteps } from "../../utils";
 
 const CreateChainTx = () => {
   const { setRunAction, isApiSuccess, isLoading } = useOutletContext();
   const [progress, setProgress] = useState(0);
   const [activeStep, setActiveStep] = useState(0);
-
-  const steps = [
-    "Submitting Create Chain Tx...",
-    "Waiting for confirmation...",
-    "Signing Create Chain transaction...",
-    "Extracting Blockchain ID and VM ID...",
-    "Storing in sidecar.json...",
-  ];
 
   useEffect(() => {
     setRunAction(() => handleRunApi);
@@ -112,7 +105,7 @@ const CreateChainTx = () => {
             </div>
 
             <div className="space-y-3 px-1">
-              {steps.map((text, index) => {
+              {createChainTxSteps.map((text, index) => {
                 const isActive = index <= activeStep;
                 const isCompleted = index < activeStep || isApiSuccess;
 

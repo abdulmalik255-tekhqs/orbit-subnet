@@ -22,7 +22,7 @@ const Index = () => {
         <Route path="bootstrap-validators" element={<BootstrapValidators />} />
         <Route path="create-orbit-tx" element={<CreateSubnetTx />} />
         <Route path="create-chain-tx" element={<CreateChainTx />} />
-        <Route path="convert-l1" element={<ConvertL1 />} />
+        <Route path="convert-orbit" element={<ConvertL1 />} />
         <Route path="deploy-vmc" element={<DeployVMC />} />
         <Route path="initialize-vmc" element={<InitializeVMC />} />
       </Route>

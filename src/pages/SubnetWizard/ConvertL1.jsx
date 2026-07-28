@@ -6,19 +6,12 @@ import {
   HiExclamation,
 } from "react-icons/hi";
 import { toast } from "react-toastify";
+import { convertToOrbitSteps } from "../../utils";
 
 const ConvertL1 = () => {
   const { setRunAction, isApiSuccess, isLoading } = useOutletContext();
   const [progress, setProgress] = useState(0);
   const [activeStep, setActiveStep] = useState(0);
-
-  const steps = [
-    "Submitting Convert to Orbit...",
-    "Waiting for finalization (~30s)...",
-    "Registering bootstrap validators...",
-    "Assigning Validation IDs...",
-    "Storing results in sidecar.json...",
-  ];
 
   useEffect(() => {
     setRunAction(() => handleRunApi);
@@ -119,7 +112,7 @@ const ConvertL1 = () => {
 
           {/* Logs */}
           <div className="space-y-3 px-1">
-            {steps.map((text, index) => {
+            {convertToOrbitSteps.map((text, index) => {
               const isActive = index <= activeStep;
               const isCompleted = index < activeStep || isApiSuccess;
 

@@ -7,20 +7,13 @@ import {
   HiCheckCircle,
 } from "react-icons/hi";
 import { toast } from "react-toastify";
+import { deployVmcSteps } from "../../utils";
 
 const DeployVMC = () => {
   const { setRunAction, isApiSuccess, isLoading } = useOutletContext();
   const [deploymentTarget, setDeploymentTarget] = useState("external");
   const [progress, setProgress] = useState(0);
   const [activeStep, setActiveStep] = useState(0);
-
-  const steps = [
-    "Deploying Validator Manager implementation...",
-    "Deploying ProxyAdmin...",
-    "Deploying TransparentProxy...",
-    "Linking implementation to proxy...",
-    "Verifying contract source...",
-  ];
 
   // Mock deployment logic
   useEffect(() => {
@@ -192,7 +185,7 @@ const DeployVMC = () => {
             </div>
 
             <div className="space-y-3 px-1">
-              {steps.map((text, index) => {
+              {deployVmcSteps.map((text, index) => {
                 const isActive = index <= activeStep;
                 const isCompleted = index < activeStep || isApiSuccess;
 

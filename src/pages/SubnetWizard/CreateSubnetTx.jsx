@@ -25,9 +25,7 @@ const CreateSubnetTx = () => {
 
   const handleRunApi = async () => {
     const res = await dispatch.wizard.createsubnetTx({});
-    console.log("CreateSubnetTx response:", res);
 
-    // Support both 'state' (backend) and 'status' (older/other steps)
     const status = res?.status || res?.state;
 
     if (

@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 const ChainID = () => {
   const { setRunAction } = useOutletContext();
   const dispatch = useDispatch();
-  const [chainId, setChainId] = useState();
+  const [chainId, setChainId] = useState("");
   const [networkName, setNetworkName] = useState("");
   const [symbol, setSymbol] = useState("");
   const [description, setDescription] = useState("");
@@ -116,7 +116,7 @@ const ChainID = () => {
           size={20}
         />
         <p className="text-blue-400/90 text-[13px] leading-relaxed">
-          <span className="font-bold">Mainnet rules:</span> Use a different
+          <span className="font-bold">Mainnet Rules:</span> Use a different
           Chain ID than your testnet deployment to prevent replay attacks. The
           CLI will warn if a conflict is detected.
           {/* A separate mainnet override

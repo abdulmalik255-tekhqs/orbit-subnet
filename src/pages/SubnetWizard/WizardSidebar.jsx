@@ -1,16 +1,5 @@
 import React from "react";
-
-const steps = [
-  { id: 1, title: "Validator Owner", phase: "CREATE" },
-  { id: 2, title: "Config Defaults", phase: "CREATE" },
-  { id: 3, title: "Chain ID", phase: "CREATE" },
-  { id: 4, title: "Bootstrap Validators", phase: "DEPLOY" },
-  { id: 5, title: "Create Orbit Tx", phase: "DEPLOY" },
-  { id: 6, title: "Create Chain Tx", phase: "DEPLOY" },
-  { id: 7, title: "Convert to Orbit", phase: "DEPLOY" },
-  { id: 8, title: "Deploy VMC", phase: "DEPLOY" },
-  { id: 9, title: "Initialize VMC", phase: "DEPLOY" },
-];
+import { steps } from "../../utils";
 
 const PhaseHeader = ({ children }) => (
   <div className="flex items-center gap-2 px-4 pt-2.5 pb-1.5">

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { baseUrl } from "../app.config";
+import { baseUrl, baseApiKey } from "../app.config";
 
 const axiosInstance = axios.create({
   baseURL: baseUrl,
@@ -7,15 +7,22 @@ const axiosInstance = axios.create({
     "Content-Type": "application/json",
   },
 });
-
-// Use interceptors if needed in the future (e.g. for error handling)
-axiosInstance.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    // Handle global errors here
-    console.error("API Error:", error.response || error.message);
-    return Promise.reject(error);
+export const dockerInstance = axios.create({
+  baseURL: process.env.REACT_APP_DOCKER_URL,
+  headers: {
+    "Content-Type": "application/json",
+    "x-api-key": baseApiKey,
   },
-);
+});
+const responseInterceptor = (response) => response;
+
+const errorInterceptor = (error) => {
+  console.error("API Error:", error.response || error.message);
+  return Promise.reject(error);
+};
+
+axiosInstance.interceptors.response.use(responseInterceptor, errorInterceptor);
+
+dockerInstance.interceptors.response.use(responseInterceptor, errorInterceptor);
 
 export default axiosInstance;

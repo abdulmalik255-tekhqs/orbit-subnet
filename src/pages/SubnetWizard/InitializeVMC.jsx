@@ -12,15 +12,7 @@ import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import confetti from "canvas-confetti";
-
-const allLogs = [
-  "Checking bootstrap validator node sync...",
-  "Waiting for Orbit EVM to produce blocks (30-60s)...",
-  "Starting Signature Aggregator...",
-  "Collecting BLS signatures from validators...",
-  "Calling initialize() on VMC proxy...",
-  "Finalizing deployment state...",
-];
+import { allLogs } from "../../utils";
 
 const InitializeVMC = () => {
   const { setRunAction, isApiSuccess, isLoading } = useOutletContext();
@@ -34,7 +26,7 @@ const InitializeVMC = () => {
       setProgress(5);
       setLogs(["Initiating final initialization..."]);
 
-      const res = await dispatch.wizard.createsubnetTx({});
+      const res = await dispatch.wizard.initializeOrbitDeployment({});
       const status = res?.state || res?.status;
 
       if (status === "completed" || status === "success") {
@@ -217,17 +209,15 @@ const InitializeVMC = () => {
                 {[
                   {
                     label: "Network Name",
-                    value: "RytOrbit1",
+                    value: deploymentResult?.result?.subnetName,
                   },
                   {
                     label: "ChainID",
-                    value: "808080",
+                    value: deploymentResult?.result?.chainId,
                   },
                   {
                     label: "RPC Endpoint",
-                    value: deploymentResult?.result?.blockchainIdOnchain
-                      ? `http://18.118.130.128:9652/ext/bc/${deploymentResult?.result?.blockchainIdOnchain}/rpc`
-                      : "http://18.118.130.128:9652/ext/bc/co9ZjUioEJ8iBPhEzrDmh68yEWvH6whVBYD1yJv8K9a5QAHxk/rpc",
+                    value: deploymentResult?.result?.rpcEndpoint,
                   },
                   {
                     label: "Blockchain ID (On-chain)",

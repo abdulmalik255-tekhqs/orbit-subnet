@@ -3,7 +3,7 @@ import { Outlet, useNavigate, useLocation } from "react-router-dom";
 import WizardNavbar from "./WizardNavbar";
 import WizardSidebar from "./WizardSidebar";
 import WizardFooter from "./WizardFooter";
-import { totalSteps } from "../../utils";
+import { totalSteps, stepRoutes } from "../../utils";
 
 const WizardLayout = () => {
   const navigate = useNavigate();
@@ -12,19 +12,6 @@ const WizardLayout = () => {
   const [runAction, setRunAction] = React.useState(null);
   const [isApiSuccess, setIsApiSuccess] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
-
-  // Map routes to steps
-  const stepRoutes = {
-    1: "/validator-owner",
-    2: "/config-defaults",
-    3: "/chain-id",
-    4: "/bootstrap-validators",
-    5: "/create-orbit-tx",
-    6: "/create-chain-tx",
-    7: "/convert-l1",
-    8: "/deploy-vmc",
-    9: "/initialize-vmc",
-  };
 
   useEffect(() => {
     const path = location.pathname;
@@ -35,7 +22,7 @@ const WizardLayout = () => {
     else if (path === "/bootstrap-validators") step = 4;
     else if (path === "/create-orbit-tx") step = 5;
     else if (path === "/create-chain-tx") step = 6;
-    else if (path === "/convert-l1") step = 7;
+    else if (path === "/convert-orbit") step = 7;
     else if (path === "/deploy-vmc") step = 8;
     else if (path === "/initialize-vmc") step = 9;
 

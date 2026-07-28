@@ -1,33 +1,36 @@
 import React, { useState } from "react";
-import { LuKey, LuFolder, LuPlus } from "react-icons/lu";
-import { FiEdit } from "react-icons/fi";
+import {
+  LuKey,
+  // LuFolder, LuPlus
+} from "react-icons/lu";
+// import { FiEdit } from "react-icons/fi";
 
 const ValidatorOwner = () => {
-  const [method, setMethod] = useState("manual");
+  // const [method, setMethod] = useState("manual");
   const [address, setAddress] = useState(
     "0x833261B00C173896A7E0e8C7a6e884929442d1AF",
   );
 
-  const selectionCards = [
-    {
-      id: "existing",
-      title: "Select existing key",
-      description: "Choose from keys stored in ~/.ryt-cli/key/",
-      icon: <LuFolder size={20} />,
-    },
-    {
-      id: "new",
-      title: "Create new key",
-      description: "Generate a new Ed25519 key pair on this device",
-      icon: <LuPlus size={20} />,
-    },
-    {
-      id: "manual",
-      title: "Enter address manually",
-      description: "Input an existing 0x EVM address",
-      icon: <FiEdit size={20} />,
-    },
-  ];
+  // const selectionCards = [
+  //   {
+  //     id: "existing",
+  //     title: "Select existing key",
+  //     description: "Choose from keys stored in ~/.ryt-cli/key/",
+  //     icon: <LuFolder size={20} />,
+  //   },
+  //   {
+  //     id: "new",
+  //     title: "Create new key",
+  //     description: "Generate a new Ed25519 key pair on this device",
+  //     icon: <LuPlus size={20} />,
+  //   },
+  //   {
+  //     id: "manual",
+  //     title: "Enter address manually",
+  //     description: "Input an existing 0x EVM address",
+  //     icon: <FiEdit size={20} />,
+  //   },
+  // ];
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -97,21 +100,21 @@ const ValidatorOwner = () => {
         ))}
       </div> */}
 
-      {method === "manual" && (
-        <div className="mb-8 animate-in fade-in slide-in-from-top-2 duration-300">
-          <label className="block text-gray-400 text-xs font-medium mb-2">
-            Owner Address<span className="text-red-500">*</span>
-          </label>
-          <input
-            type="text"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            className="w-full bg-[#0f172a] border border-[#1e293b] rounded-lg px-4 py-3 text-gray-200 focus:outline-none focus:border-blue-500 transition-colors"
-            placeholder="0x..."
-            disabled={true}
-          />
-        </div>
-      )}
+      {/* {method === "manual" && ( */}
+      <div className="mb-8 animate-in fade-in slide-in-from-top-2 duration-300">
+        <label className="block text-gray-400 text-xs font-medium mb-2">
+          Owner Address<span className="text-red-500">*</span>
+        </label>
+        <input
+          type="text"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          className="w-full bg-[#0f172a] border border-[#1e293b] rounded-lg px-4 py-3 text-gray-200 focus:outline-none focus:border-blue-500 transition-colors"
+          placeholder="0x..."
+          disabled={true}
+        />
+      </div>
+      {/* )} */}
 
       {/* <div className="bg-orange-900/10 border border-orange-500/20 rounded-lg p-4 flex items-start gap-4">
         <div className="text-orange-500 mt-0.5">
