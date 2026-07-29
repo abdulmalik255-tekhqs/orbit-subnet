@@ -28,12 +28,12 @@ const ChainID = () => {
         networkName,
         chainId,
         tokenSymbol: symbol,
-        description,
+        description: description || "",
       });
     });
 
     return () => setRunAction(null);
-  }, [networkName, chainId, symbol, dispatch, setRunAction]);
+  }, [networkName, chainId, symbol, description, dispatch, setRunAction]);
 
   return (
     <div className="max-w-6xl mx-auto">

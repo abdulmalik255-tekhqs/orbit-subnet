@@ -129,7 +129,6 @@ const wizard = {
           payload,
         );
         if (response) {
-          console.log("Bootstrap validators response:", response);
           toast.success("Bootstrap validators deployed successfully!");
           dispatch.wizard.setDeployedBootstrapValidatorID(
             response?.data?.jobId,
@@ -251,7 +250,6 @@ const wizard = {
           ) {
             toast.success("Orbit transaction created successfully!");
           }
-          console.log("Create subnet transaction response:", response);
           try {
             const result =
               response?.data?.data?.result || response?.data?.result;
@@ -266,10 +264,9 @@ const wizard = {
               description: result?.subnetDescription,
               orbitId: result?.subnetIdOnchain,
               rpc: result?.rpcEndpoint,
-              chainId: result?.chainId,
+              chainId: result?.chainId.toString(),
               blockChainId: result?.blockchainIdOnchain,
             };
-            console.log("Docker deployment payload:", dockerPayload);
             const res = await dockerInstance.post(
               `/docker/deployIndexer`,
               dockerPayload,
