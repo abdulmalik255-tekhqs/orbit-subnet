@@ -292,9 +292,27 @@ const InitializeVMC = () => {
                 <h2 className="text-2xl font-bold text-white tracking-tight">
                   Your Orbit is Live
                 </h2>
+                <div className="mt-3 inline-flex flex-col items-center gap-2 rounded-xl border border-blue-500/30 bg-blue-500/5 px-4 py-3">
+                  <span className="text-[11px] uppercase tracking-[0.18em] text-blue-300">
+                    Open Orbit Explorer
+                  </span>
+                  <a
+                    href="http://3.129.128.112:3009/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-lg bg-blue-500 px-4 py-2 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(59,130,246,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-blue-400 hover:shadow-[0_12px_28px_rgba(59,130,246,0.45)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300"
+                    aria-label="Open Orbit Explorer in a new tab"
+                  >
+                    Launch Explorer
+                    <span aria-hidden="true">↗</span>
+                  </a>
+                  {/* <span className="text-[11px] text-gray-400">
+                    Opens in a new tab
+                  </span> */}
+                </div>
                 <p className="text-gray-500 text-sm max-w-sm leading-relaxed">
                   All 9 steps completed successfully. Your RYT Orbit blockchain
-                  is now operational on Mainnet with sovereign validator
+                  is now operational on Titan testnet with sovereign validator
                   management.
                 </p>
               </div>

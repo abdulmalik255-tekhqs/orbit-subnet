@@ -1,39 +1,78 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { MdOutlineFingerprint } from "react-icons/md";
 import { IoInformationCircleOutline } from "react-icons/io5";
 import { useOutletContext } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 
 const ChainID = () => {
   const { setRunAction } = useOutletContext();
   const dispatch = useDispatch();
-  const [chainId, setChainId] = useState("");
-  const [networkName, setNetworkName] = useState("");
-  const [symbol, setSymbol] = useState("");
-  const [description, setDescription] = useState("");
+
+  const formik = useFormik({
+    initialValues: {
+      networkName: "",
+      chainId: "",
+      symbol: "",
+      description: "",
+    },
+    validationSchema: Yup.object({
+      networkName: Yup.string()
+        .trim()
+        .required("Network Name is required")
+        .matches(/^\S+$/, "Network Name must not contain spaces")
+        .max(20, "Network Name must be 20 characters or less"),
+      chainId: Yup.string()
+        .required("Chain ID is required")
+        .matches(/^\d{4}$/, "Chain ID must be exactly 4 digits"),
+      symbol: Yup.string()
+        .trim()
+        .required("Token Symbol is required")
+        .max(10, "Token Symbol must be 10 characters or less"),
+      description: Yup.string().trim().required("Description is required"),
+    }),
+    validateOnChange: true,
+    validateOnBlur: true,
+    onSubmit: async (values) => {
+      await dispatch.wizard.postSubnetData({
+        networkName: values.networkName.trim(),
+        chainId: Number(values.chainId),
+        tokenSymbol: values.symbol.trim().toUpperCase(),
+        description: values.description.trim(),
+      });
+    },
+  });
+
+  const hasFieldError = (fieldName) =>
+    formik.touched[fieldName] && formik.errors[fieldName];
 
   useEffect(() => {
     setRunAction(() => async () => {
-      if (!networkName || networkName.trim() === "") {
-        toast.error("Network Name is required");
-        throw new Error("Network Name is required");
-      }
-      if (!chainId || chainId <= 0) {
-        toast.error("Valid Chain ID is required");
-        throw new Error("Valid Chain ID is required");
+      const errors = await formik.validateForm();
+
+      formik.setTouched(
+        {
+          networkName: true,
+          chainId: true,
+          symbol: true,
+          description: true,
+        },
+        true,
+      );
+
+      if (Object.keys(errors).length > 0) {
+        const firstError = Object.values(errors)[0];
+        toast.error(firstError);
+        throw new Error(firstError);
       }
 
-      await dispatch.wizard.postSubnetData({
-        networkName,
-        chainId,
-        tokenSymbol: symbol,
-        description: description || "",
-      });
+      await formik.submitForm();
     });
 
     return () => setRunAction(null);
-  }, [networkName, chainId, symbol, description, dispatch, setRunAction]);
+  }, [setRunAction]);
 
   return (
     <div className="max-w-6xl mx-auto">
@@ -63,50 +102,100 @@ const ChainID = () => {
           </label>
           <input
             type="text"
-            value={networkName}
-            onChange={(e) => setNetworkName(e.target.value)}
+            name="networkName"
+            value={formik.values.networkName}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
             placeholder="e.g. My Custom Network"
-            className="w-full bg-[#0a0f1d] border border-[#1e293b] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-600 transition-colors"
+            className={`w-full bg-[#0a0f1d] border rounded-lg px-4 py-3 text-white focus:outline-none transition-colors ${
+              hasFieldError("networkName")
+                ? "border-red-500 focus:border-red-500"
+                : "border-[#1e293b] focus:border-blue-600"
+            }`}
           />
+          {hasFieldError("networkName") && (
+            <p className="mt-1 text-[11px] text-red-400">
+              {formik.errors.networkName}
+            </p>
+          )}
         </div>
         <div className="w-full mb-2">
           <label className="block text-[12px] font-bold text-gray-400 uppercase tracking-wider mb-[2px]">
             Chain ID <span className="text-red-500">*</span>
           </label>
           <input
-            placeholder="12345"
-            type="number"
-            value={chainId}
-            onChange={(e) => setChainId(Number(e.target.value))}
-            className="w-full bg-[#0a0f1d] border border-[#1e293b] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-600 transition-colors"
+            placeholder="1234"
+            type="text"
+            inputMode="numeric"
+            name="chainId"
+            value={formik.values.chainId}
+            onChange={(e) => {
+              const digitsOnly = e.target.value.replace(/\D/g, "").slice(0, 4);
+              formik.setFieldValue("chainId", digitsOnly);
+            }}
+            onBlur={formik.handleBlur}
+            className={`w-full bg-[#0a0f1d] border rounded-lg px-4 py-3 text-white focus:outline-none transition-colors ${
+              hasFieldError("chainId")
+                ? "border-red-500 focus:border-red-500"
+                : "border-[#1e293b] focus:border-blue-600"
+            }`}
           />
+          {hasFieldError("chainId") && (
+            <p className="mt-1 text-[11px] text-red-400">
+              {formik.errors.chainId}
+            </p>
+          )}
         </div>
         <div className="w-full mb-2">
           <label className="block text-[12px] font-bold text-gray-400 uppercase tracking-wider mb-[2px]">
-            Token Symbol
+            Token Symbol <span className="text-red-500">*</span>
           </label>
           <input
             placeholder="MYTKN"
             type="text"
-            value={symbol}
-            onChange={(e) => setSymbol(e.target.value.toUpperCase())}
-            className="w-full bg-[#0a0f1d] border border-[#1e293b] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-600 transition-colors"
+            name="symbol"
+            value={formik.values.symbol}
+            onChange={(e) =>
+              formik.setFieldValue("symbol", e.target.value.toUpperCase())
+            }
+            onBlur={formik.handleBlur}
+            className={`w-full bg-[#0a0f1d] border rounded-lg px-4 py-3 text-white focus:outline-none transition-colors ${
+              hasFieldError("symbol")
+                ? "border-red-500 focus:border-red-500"
+                : "border-[#1e293b] focus:border-blue-600"
+            }`}
           />
+          {hasFieldError("symbol") && (
+            <p className="mt-1 text-[11px] text-red-400">
+              {formik.errors.symbol}
+            </p>
+          )}
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-1 gap-6 mb-2">
         <div className="w-full mb-2">
           <label className="block text-[12px] font-bold text-gray-400 uppercase tracking-wider mb-[2px]">
-            Description (Optional)
+            Description <span className="text-red-500">*</span>
           </label>
           <textarea
             placeholder="Added to the genesis config as a comment for reference."
             as="textarea"
             rows={4}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className="w-full bg-[#0a0f1d] border border-[#1e293b] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-600 transition-colors"
+            name="description"
+            value={formik.values.description}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            className={`w-full bg-[#0a0f1d] border rounded-lg px-4 py-3 text-white focus:outline-none transition-colors ${
+              hasFieldError("description")
+                ? "border-red-500 focus:border-red-500"
+                : "border-[#1e293b] focus:border-blue-600"
+            }`}
           />
+          {hasFieldError("description") && (
+            <p className="mt-1 text-[11px] text-red-400">
+              {formik.errors.description}
+            </p>
+          )}
         </div>
       </div>
 

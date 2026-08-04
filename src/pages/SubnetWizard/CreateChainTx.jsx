@@ -54,7 +54,7 @@ const CreateChainTx = () => {
           <HiOutlineLink size={24} />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-white ">CreateChainTx</h1>
+          <h1 className="text-2xl font-bold text-white ">Create ChainTx</h1>
           <p className="text-gray-400 text-sm max-w-2xl leading-relaxed font-normal">
             Create your sovereign Orbit chain on the newly created Orbit. This
             step registers the chain infrastructure and initial genesis state.
@@ -84,12 +84,7 @@ const CreateChainTx = () => {
         </svg>
 
         <p className="text-sm leading-6 text-gray-400">
-          This transaction finalizes the chain creation. The chain will be
-          linked to Orbit ID:
-          <span className="text-gray-200 ml-1 font-mono text-xs">
-            2tZ...z4K
-          </span>
-          .
+          This transaction finalizes the chain creation.
         </p>
       </div>
 

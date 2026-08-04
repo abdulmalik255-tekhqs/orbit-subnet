@@ -1,5 +1,4 @@
 import { toast } from "react-toastify";
-import { ethers } from "ethers";
 
 export const shortenString = (input, startLength = 8, endLength = 5) => {
   if (input?.length <= startLength + endLength) {
@@ -47,8 +46,8 @@ export const allLogs = [
 ];
 export const deployVmcSteps = [
   "Deploying Validator Manager implementation...",
-  "Deploying ProxyAdmin...",
-  "Deploying TransparentProxy...",
+  "Deploying Proxy Admin...",
+  "Deploying Transparent Proxy...",
   "Linking implementation to proxy...",
   "Verifying contract source...",
 ];

@@ -5,11 +5,48 @@ import { useOutletContext } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
-const ValidatorForm = ({ index, data = {}, onChange }) => (
+const PRESET_VALIDATORS = [
+  {
+    id: "validator-node-1",
+    label: "Validator Node 1",
+    nodeId: "NodeID-EAYeSnMjfPwa5icwfVEiEcwMmGRAJQJoL",
+    weight: "20",
+    blsPublicKey:
+      "0x93dec875b66f52a9a349cdae963ed194b2287f76fc15cec7be23bc936ab6a2e8f1f91ebd8aa89666e1334fd407c3a346",
+    blsProofOfPossession:
+      "0x828499204d8275e23e5165c9b498b287551c9ab563aca94ed04723fd89850b38e45011b7238a6278f62d9da5e3d09fee13476290d9b393d869df86b8ffba1bfd631887a66fed04f53e0397bec486a8651ec16b354831d7643038c575b2621682",
+  },
+];
+
+const ValidatorForm = ({
+  index,
+  data = {},
+  onChange,
+  onSelectPreset,
+  presetOptions,
+}) => (
   <div className="bg-[#0f172a] border border-[#1e293b] rounded-xl p-6 mb-4">
     <div className="flex items-center gap-2 mb-6">
       <BsDatabase className="text-blue-500" size={16} />
       <span className="text-white font-semibold">Validator {index + 1}</span>
+    </div>
+
+    <div className="mb-6">
+      <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">
+        Preset Validator
+      </label>
+      <select
+        value={data?.presetId || ""}
+        onChange={(e) => onSelectPreset(index, e.target.value)}
+        className="w-full bg-[#0a0f1d] border border-[#1e293b] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-600 transition-colors"
+      >
+        <option value="">Custom (manual entry)</option>
+        {presetOptions.map((preset) => (
+          <option key={preset.id} value={preset.id}>
+            {preset.label}
+          </option>
+        ))}
+      </select>
     </div>
 
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -76,6 +113,7 @@ const BootstrapValidators = () => {
       weight: "100",
       blsPublicKey: "",
       blsProofOfPossession: "",
+      presetId: "",
     },
   ]);
   const { setRunAction } = useOutletContext();
@@ -93,6 +131,7 @@ const BootstrapValidators = () => {
             weight: "100",
             blsPublicKey: "",
             blsProofOfPossession: "",
+            presetId: "",
           });
         }
       } else {
@@ -107,6 +146,36 @@ const BootstrapValidators = () => {
       if (!prev[index]) return prev;
       const next = [...prev];
       next[index] = { ...next[index], [field]: value };
+      return next;
+    });
+  };
+
+  const handlePresetSelect = (index, presetId) => {
+    setValidators((prev) => {
+      if (!prev[index]) return prev;
+
+      const next = [...prev];
+
+      if (!presetId) {
+        next[index] = {
+          ...next[index],
+          presetId: "",
+        };
+        return next;
+      }
+
+      const selectedPreset = PRESET_VALIDATORS.find((v) => v.id === presetId);
+      if (!selectedPreset) return prev;
+
+      next[index] = {
+        ...next[index],
+        presetId: selectedPreset.id,
+        nodeId: selectedPreset.nodeId,
+        weight: selectedPreset.weight,
+        blsPublicKey: selectedPreset.blsPublicKey,
+        blsProofOfPossession: selectedPreset.blsProofOfPossession,
+      };
+
       return next;
     });
   };
@@ -245,9 +314,7 @@ const BootstrapValidators = () => {
             Bootstrap Validator Setup
           </h1>
           <p className="text-gray-400 text-sm max-w-2xl leading-relaxed font-normal">
-            Provide node info for the initial validators. These validators
-            register in the Convert Orbit and must have P2P port 9651 exposed
-            with public-ip set.
+            Provide node info for the initial validators.
           </p>
         </div>
       </div>
@@ -330,6 +397,8 @@ const BootstrapValidators = () => {
             index={i}
             data={data}
             onChange={handleValidatorChange}
+            onSelectPreset={handlePresetSelect}
+            presetOptions={PRESET_VALIDATORS}
           />
         ))}
       </div>

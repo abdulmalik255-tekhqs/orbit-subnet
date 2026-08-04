@@ -1,5 +1,5 @@
 {
-  "name": "bryt-explorer",
+  "name": "orbit-cli",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -20,6 +20,7 @@
     "echarts": "^6.0.0",
     "echarts-for-react": "^3.0.6",
     "ethers": "^6.15.0",
+    "formik": "^2.4.9",
     "graphql": "^16.10.0",
     "graphql-request": "^7.1.2",
     "highcharts": "^12.4.0",
@@ -44,7 +45,8 @@
     "swiper": "^11.2.1",
     "viem": "^2.40.3",
     "wagmi": "^3.0.2",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "yup": "^1.7.1"
   },
   "scripts": {
     "start": "react-scripts start",
