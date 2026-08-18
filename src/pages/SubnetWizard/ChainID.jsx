@@ -3,7 +3,7 @@ import { MdOutlineFingerprint } from "react-icons/md";
 import { IoInformationCircleOutline } from "react-icons/io5";
 import { useOutletContext } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
@@ -64,7 +64,7 @@ const ChainID = () => {
 
       if (Object.keys(errors).length > 0) {
         const firstError = Object.values(errors)[0];
-        toast.error(firstError);
+        // toast.error(firstError);
         throw new Error(firstError);
       }
 
