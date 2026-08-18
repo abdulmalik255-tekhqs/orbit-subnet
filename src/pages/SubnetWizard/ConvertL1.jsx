@@ -93,8 +93,9 @@ const ConvertL1 = () => {
           <p className="text-gray-400 text-[13px] leading-relaxed">
             Once converted, this orbit becomes a sovereign. You cannot revert to
             a standard orbit. All bootstrap validators will be permanently
-            registered. Please confirm you have backed up your sidecar.json and
-            genesis.json files.
+            registered.
+            {/* Please confirm you have backed up your sidecar.json and
+            genesis.json files. */}
           </p>
         </div>
       </div>

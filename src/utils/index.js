@@ -19,8 +19,8 @@ export const steps = [
   { id: 5, title: "Create Orbit Tx", phase: "DEPLOY" },
   { id: 6, title: "Create Chain Tx", phase: "DEPLOY" },
   { id: 7, title: "Convert to Orbit", phase: "DEPLOY" },
-  { id: 8, title: "Deploy VMC", phase: "DEPLOY" },
-  { id: 9, title: "Initialize VMC", phase: "DEPLOY" },
+  // { id: 8, title: "Deploy VMC", phase: "DEPLOY" },
+  { id: 8, title: "Initialize VMC", phase: "DEPLOY" },
 ];
 // Map routes to steps
 export const stepRoutes = {
@@ -31,10 +31,10 @@ export const stepRoutes = {
   5: "/create-orbit-tx",
   6: "/create-chain-tx",
   7: "/convert-orbit",
-  8: "/deploy-vmc",
-  9: "/initialize-vmc",
+  // 8: "/deploy-vmc",
+  8: "/initialize-vmc",
 };
-export const totalSteps = 9;
+export const totalSteps = 8;
 
 export const allLogs = [
   "Checking bootstrap validator node sync...",

@@ -141,11 +141,10 @@ const InitializeVMC = () => {
           <p className="text-[12px] text-gray-400 leading-relaxed italic">
             This step calls{" "}
             <span className="text-white font-mono">initialize()</span> on the
-            ValidatorManager contract. For PoM consensus, it calls
+            ValidatorManager. For PoM consensus, it calls
             <span className="text-white font-mono ml-1">
-              InitializeProofOfAuthority()
+              InitializeProofOfMajority()
             </span>
-            . Bootstrap validators must have P2P port 9651 exposed.
           </p>
         </div>
 
