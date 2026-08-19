@@ -83,9 +83,8 @@ const ChainID = () => {
         <div>
           <h1 className="text-2xl font-bold text-white">Network Details</h1>
           <p className="text-gray-400 text-sm max-w-2xl leading-relaxed">
-            Specify your network name and EVM chain identifier. The Chain ID
-            must be a positive integer and globally unique to prevent replay
-            attacks.
+            Define your Orbit identity with a unique network name and Chain ID
+            for transaction and network identification.
           </p>
         </div>
       </div>
@@ -106,7 +105,7 @@ const ChainID = () => {
             value={formik.values.networkName}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            placeholder="e.g. My Custom Network"
+            placeholder="Enter network name (e.g., MyOrbit)"
             className={`w-full bg-[#0a0f1d] border rounded-lg px-4 py-3 text-white focus:outline-none transition-colors ${
               hasFieldError("networkName")
                 ? "border-red-500 focus:border-red-500"
@@ -124,7 +123,7 @@ const ChainID = () => {
             Chain ID <span className="text-red-500">*</span>
           </label>
           <input
-            placeholder="1234"
+            placeholder="Enter 4-digit Chain ID (e.g., 1234)"
             type="text"
             inputMode="numeric"
             name="chainId"
@@ -151,7 +150,7 @@ const ChainID = () => {
             Token Symbol <span className="text-red-500">*</span>
           </label>
           <input
-            placeholder="MYTKN"
+            placeholder="Enter token symbol (e.g., ORB)"
             type="text"
             name="symbol"
             value={formik.values.symbol}
@@ -178,14 +177,14 @@ const ChainID = () => {
             Description <span className="text-red-500">*</span>
           </label>
           <textarea
-            placeholder="Added to the genesis config as a comment for reference."
+            placeholder="Enter deployment metadata for network identification."
             as="textarea"
             rows={4}
             name="description"
             value={formik.values.description}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            className={`w-full bg-[#0a0f1d] border rounded-lg px-4 py-3 text-white focus:outline-none transition-colors ${
+            className={`w-full bg-[#0a0f1d] border rounded-lg px-4 py-3 text-white focus:outline-none transition-colors placeholder-gray-500 ${
               hasFieldError("description")
                 ? "border-red-500 focus:border-red-500"
                 : "border-[#1e293b] focus:border-blue-600"
@@ -205,9 +204,9 @@ const ChainID = () => {
           size={20}
         />
         <p className="text-blue-400/90 text-[13px] leading-relaxed">
-          <span className="font-bold">Mainnet Rules:</span> Use a different
-          Chain ID than your testnet deployment to prevent replay attacks. The
-          CLI will warn if a conflict is detected.
+          <span className="font-bold">Network Isolation:</span> Each environment
+          requires a distinct Chain ID to maintain transaction isolation and
+          prevent cross-environment replay conflicts.
           {/* A separate mainnet override
           (sidecar.OrbitEVMMainnetChainID) can be applied at deploy time. */}
         </p>

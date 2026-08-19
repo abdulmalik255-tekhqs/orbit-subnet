@@ -11,7 +11,7 @@ const ConfigDefaults = () => {
       id: "test",
       title: "Test Environment",
       description:
-        "1M tokens to ewoq test address, constant fees, ICM enabled, open permissions.",
+        "Configured for network testing, validation, and integration workflows.",
       icon: <TbFlask2 size={24} />,
       badge: "Fast setup",
       badgeColor: "text-blue-400 bg-blue-900/40 border-none",
@@ -20,7 +20,7 @@ const ConfigDefaults = () => {
       id: "production",
       title: "Production Environment",
       description:
-        "1M tokens to newly created key, constant fees, ICM enabled, open permissions.",
+        "Configured for live network operations and production deployments.",
       icon: <MdOutlineFactory size={24} />,
       badge: "Recommended",
       badgeColor: "text-green-500 bg-green-900/40 border-none",
@@ -35,22 +35,23 @@ const ConfigDefaults = () => {
         </div>
         <div>
           <h1 className="text-2xl font-bold text-white">
-            Blockchain Configuration Defaults
+            Configuration Environment
           </h1>
           <p className="text-gray-400 text-sm max-w-2xl">
-            Choose a preset to drive the remaining configuration.
+            Select the target environment to initialize the appropriate
+            deployment configuration.
           </p>
         </div>
       </div>
 
-      <div className="flex gap-2 mb-4">
+      {/* <div className="flex gap-2 mb-4">
         <span className="border border-red-400 text-red-400 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
           Required
         </span>
         <span className="border border-orange-400 text-orange-400 text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">
           Branches
         </span>
-      </div>
+      </div> */}
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {presets.map((preset) => (

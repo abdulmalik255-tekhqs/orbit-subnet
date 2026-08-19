@@ -41,7 +41,7 @@ const ValidatorOwner = () => {
         <div>
           <h1 className="text-2xl font-bold text-white">Orbit Creator</h1>
           <p className="text-gray-400 text-sm">
-            This EVM address will have admin control over the ValidatorManager.
+            This address will have admin control over the ValidatorManager.
           </p>
         </div>
       </div>
@@ -102,7 +102,7 @@ const ValidatorOwner = () => {
       {/* {method === "manual" && ( */}
       <div className="mb-8 animate-in fade-in slide-in-from-top-2 duration-300">
         <label className="block text-gray-400 text-xs font-medium mb-2">
-          Owner Address<span className="text-red-500">*</span>
+          Owner Address<span className="text-red-500"> *</span>
         </label>
         <input
           type="text"

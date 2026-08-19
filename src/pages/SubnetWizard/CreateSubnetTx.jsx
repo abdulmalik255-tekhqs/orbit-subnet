@@ -78,10 +78,10 @@ const CreateSubnetTx = () => {
           <HiOutlineDocumentText size={24} />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-white ">Create Orbit Tx</h1>
+          <h1 className="text-2xl font-bold text-white ">CreateOrbitTx</h1>
           <p className="text-gray-400 text-sm max-w-2xl leading-relaxed font-normal">
             Register the orbit on the RYT Chain. This is an automatic step — the
-            CLI submits the transaction. Ledger approval required.
+            CLI submits the transaction.
           </p>
         </div>
       </div>
@@ -107,9 +107,10 @@ const CreateSubnetTx = () => {
         </svg>
 
         <p className="text-sm leading-6 text-gray-400">
-          This transaction registers your orbit with sovereign Orbit control.
-          Threshold is <span className="text-gray-200">1-of-1</span> for
-          sovereign deployment. Control keys are auto-set from your Ledger.
+          Registers your Orbit under sovereign control with a{" "}
+          <span className="text-gray-200">1-of-1 </span>
+          authorization threshold. Control keys are automatically derived from
+          your Ledger.
         </p>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-1 gap-8">

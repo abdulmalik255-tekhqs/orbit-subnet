@@ -56,8 +56,9 @@ const CreateChainTx = () => {
         <div>
           <h1 className="text-2xl font-bold text-white ">Create ChainTx</h1>
           <p className="text-gray-400 text-sm max-w-2xl leading-relaxed font-normal">
-            Create your sovereign Orbit chain on the newly created Orbit. This
-            step registers the chain infrastructure and initial genesis state.
+            Initialize your sovereign Orbit chain on the newly provisioned
+            Orbit. This step registers the chain infrastructure and establishes
+            the initial genesis state.
           </p>
         </div>
       </div>
@@ -84,7 +85,8 @@ const CreateChainTx = () => {
         </svg>
 
         <p className="text-sm leading-6 text-gray-400">
-          This transaction finalizes the chain creation.
+          This transaction finalizes chain initialization and commits the
+          initial network configuration.
         </p>
       </div>
 

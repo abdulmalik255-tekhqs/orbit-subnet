@@ -91,9 +91,10 @@ const ConvertL1 = () => {
             This action is IRREVERSIBLE
           </h4>
           <p className="text-gray-400 text-[13px] leading-relaxed">
-            Once converted, this orbit becomes a sovereign. You cannot revert to
-            a standard orbit. All bootstrap validators will be permanently
-            registered.
+            This operation permanently establishes the Orbit as a sovereign
+            network. The transition cannot be reverted, and the initial
+            validator set will be permanently committed to the network
+            configuration.
             {/* Please confirm you have backed up your sidecar.json and
             genesis.json files. */}
           </p>

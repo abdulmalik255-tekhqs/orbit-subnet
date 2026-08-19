@@ -38,9 +38,9 @@ const ValidatorForm = ({
       <select
         value={data?.presetId || ""}
         onChange={(e) => onSelectPreset(index, e.target.value)}
-        className="w-full bg-[#0a0f1d] border border-[#1e293b] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-600 transition-colors"
+        className="w-full bg-[#0a0f1d] border border-[#1e293b] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-600 transition-colors cursor-pointer"
       >
-        <option value="">Custom (manual entry)</option>
+        <option value="">Custom</option>
         {presetOptions.map((preset) => (
           <option key={preset.id} value={preset.id}>
             {preset.label}
@@ -56,7 +56,7 @@ const ValidatorForm = ({
         </label>
         <input
           type="text"
-          placeholder="NodeID-Abc123..."
+          placeholder="Enter Node ID"
           value={data?.nodeId || ""}
           onChange={(e) => onChange(index, "nodeId", e.target.value)}
           className="w-full bg-[#0a0f1d] border border-[#1e293b] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-600 transition-colors"
@@ -67,6 +67,7 @@ const ValidatorForm = ({
           Weight
         </label>
         <input
+          placeholder="Enter Weight"
           type="text"
           value={data?.weight || ""}
           onChange={(e) => onChange(index, "weight", e.target.value)}
@@ -80,7 +81,7 @@ const ValidatorForm = ({
       </label>
       <input
         type="text"
-        placeholder="0x<96 hex chars>"
+        placeholder="Enter BLS Public Key (0x<96 hex chars>)"
         value={data?.blsPublicKey || ""}
         onChange={(e) => onChange(index, "blsPublicKey", e.target.value)}
         className="w-full bg-[#0a0f1d] border border-[#1e293b] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-600 transition-colors"
@@ -93,7 +94,7 @@ const ValidatorForm = ({
       </label>
       <input
         type="text"
-        placeholder="0x<192 hex chars>"
+        placeholder="Enter BLS Proof of Possession (0x<192 hex chars>)"
         value={data?.blsProofOfPossession || ""}
         onChange={(e) =>
           onChange(index, "blsProofOfPossession", e.target.value)
@@ -110,7 +111,7 @@ const BootstrapValidators = () => {
   const [validators, setValidators] = useState([
     {
       nodeId: "",
-      weight: "100",
+      weight: "",
       blsPublicKey: "",
       blsProofOfPossession: "",
       presetId: "",
@@ -311,10 +312,10 @@ const BootstrapValidators = () => {
         </div>
         <div>
           <h1 className="text-2xl font-bold text-white">
-            Bootstrap Validator Setup
+            Validator Set Initialization
           </h1>
           <p className="text-gray-400 text-sm max-w-2xl leading-relaxed font-normal">
-            Provide node info for the initial validators.
+            Configure validator identities from active nodes.
           </p>
         </div>
       </div>
@@ -329,8 +330,8 @@ const BootstrapValidators = () => {
       </div>
 
       <div className="w-full mb-4 max-w-2xl">
-        <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-2">
-          Number of bootstrap validators <span className="text-red-500">*</span>
+        <label className="block text-[14px] font-bold text-white capitalize tracking-wider mb-2">
+          Initial Validator Count <span className="text-red-500">*</span>
         </label>
         <input
           type="text"
@@ -358,11 +359,12 @@ const BootstrapValidators = () => {
               )}
             </div>
             <div>
-              <div className="text-white font-semibold mb-1">
+              {/* <div className="text-white font-semibold mb-1">
                 I have my own nodes
-              </div>
-              <div className="text-gray-500 text-xs leading-relaxed">
-                Provide Node IDs and BLS keys from your running nodes
+              </div> */}
+              <div className="text-white font-semibold mb-1 leading-relaxed">
+                Specify the Node IDs and BLS public keys used to initialize the
+                validator set.
               </div>
             </div>
           </div>

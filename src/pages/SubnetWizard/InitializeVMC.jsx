@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { totalSteps } from "../../utils";
 import { useOutletContext } from "react-router-dom";
 import {
   HiOutlineLightBulb,
@@ -115,9 +116,14 @@ const InitializeVMC = () => {
           <h1 className="text-xl font-bold text-white">
             Initialize Validator Manager
           </h1>
-          <p className="text-gray-400 text-sm max-w-2xl leading-relaxed">
+          {/* <p className="text-gray-400 text-sm max-w-2xl leading-relaxed">
             The final step — seed the VMC with bootstrap validators via BLS
             signatures. The CLI handles BLS signature collection automatically
+            via the Signature Aggregator.
+          </p> */}
+          <p className="text-gray-400 text-sm max-w-2xl leading-relaxed">
+            Register the bootstrap validator set through BLS signature
+            aggregation. The CLI automatically coordinates validator signatures
             via the Signature Aggregator.
           </p>
           <div className="flex gap-2 mt-4 mb-4">
@@ -198,7 +204,9 @@ const InitializeVMC = () => {
                     Deployment Complete
                   </h3>
                   <p className="text-[11px] text-gray-500 mt-1">
-                    Your Orbit is fully live on RYT Mainnet
+                    Your Orbit is fully live on Titan testnet with sovereign
+                    control. All bootstrap validators are registered and the
+                    network is operational.
                   </p>
                 </div>
               </div>
@@ -310,9 +318,9 @@ const InitializeVMC = () => {
                   </span> */}
                 </div>
                 <p className="text-gray-500 text-sm max-w-sm leading-relaxed">
-                  All 9 steps completed successfully. Your RYT Orbit blockchain
-                  is now operational on Titan testnet with sovereign validator
-                  management.
+                  All {totalSteps} steps completed successfully. Your RYT Orbit
+                  blockchain is now operational on Titan testnet with sovereign
+                  validator management.
                 </p>
               </div>
             </div>

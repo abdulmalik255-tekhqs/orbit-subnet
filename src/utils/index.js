@@ -16,9 +16,9 @@ export const steps = [
   { id: 2, title: "Config Defaults", phase: "CREATE" },
   { id: 3, title: "Chain ID", phase: "CREATE" },
   { id: 4, title: "Bootstrap Validators", phase: "DEPLOY" },
-  { id: 5, title: "Create Orbit Tx", phase: "DEPLOY" },
-  { id: 6, title: "Create Chain Tx", phase: "DEPLOY" },
-  { id: 7, title: "Convert to Orbit", phase: "DEPLOY" },
+  { id: 5, title: "CreateOrbitTx", phase: "DEPLOY" },
+  { id: 6, title: "CreateChainTx", phase: "DEPLOY" },
+  { id: 7, title: "Orbit Isolation", phase: "DEPLOY" },
   // { id: 8, title: "Deploy VMC", phase: "DEPLOY" },
   { id: 8, title: "Initialize VMC", phase: "DEPLOY" },
 ];
@@ -37,31 +37,34 @@ export const stepRoutes = {
 export const totalSteps = 8;
 
 export const allLogs = [
-  "Checking bootstrap validator node sync...",
-  "Waiting for Orbit EVM to produce blocks (30-60s)...",
-  "Starting Signature Aggregator...",
-  "Collecting BLS signatures from validators...",
-  "Calling initialize() on VMC proxy...",
+  "Verifying bootstrap validator node synchronization...",
+  "Waiting for Orbit block production (30–60s)...",
+  "Initializing BLS signature aggregation...",
+  "Collecting validator BLS signatures...",
+  "Invoking initialize() on the VMC proxy...",
   "Finalizing deployment state...",
 ];
+
 export const deployVmcSteps = [
   "Deploying Validator Manager implementation...",
-  "Deploying Proxy Admin...",
-  "Deploying Transparent Proxy...",
-  "Linking implementation to proxy...",
-  "Verifying contract source...",
+  "Deploying Proxy Admin contract...",
+  "Deploying Transparent Proxy contract...",
+  "Binding implementation to proxy...",
+  "Verifying deployed contract source...",
 ];
+
 export const createChainTxSteps = [
-  "Submitting Create Chain Tx...",
-  "Waiting for confirmation...",
-  "Signing Create Chain transaction...",
-  "Extracting Blockchain ID and VM ID...",
-  "Storing in sidecar.json...",
+  "Submitting CreateChainTx...",
+  "Awaiting transaction confirmation...",
+  "Authorizing Create Chain transaction...",
+  "Resolving Blockchain ID and VM ID...",
+  "Persisting deployment metadata to sidecar.json...",
 ];
+
 export const convertToOrbitSteps = [
-  "Submitting Convert to Orbit...",
-  "Waiting for finalization (~30s)...",
-  "Registering bootstrap validators...",
-  "Assigning Validation IDs...",
-  "Storing results in sidecar.json...",
+  "Submitting ConvertToOrbit transaction...",
+  "Awaiting transaction finalization (~30s)...",
+  "Registering bootstrap validator set...",
+  "Assigning validator validation IDs...",
+  "Persisting deployment metadata to sidecar.json...",
 ];
