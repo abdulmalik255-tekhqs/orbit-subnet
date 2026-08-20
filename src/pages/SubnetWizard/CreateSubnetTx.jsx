@@ -1,14 +1,36 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
-import { HiOutlineDocumentText, HiCheckCircle } from "react-icons/hi";
-import { useDispatch } from "react-redux";
+import {
+  HiOutlineDocumentText,
+  HiCheckCircle,
+  HiQuestionMarkCircle,
+} from "react-icons/hi";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import NetworkSummary from "../../components/NetworkSummary";
+
+const getJobFailureMessage = (job) => {
+  const rawMessage = job?.errorMessage || job?.message || "";
+  const isUnavailableDeployment =
+    job?.errorCode === "deployment_failed" ||
+    /status code:\s*503/i.test(rawMessage);
+
+  if (isUnavailableDeployment) {
+    return "Orbit deployment could not be completed because the deployment service is temporarily unavailable. Please try again in a moment.";
+  }
+
+  return (
+    rawMessage ||
+    "Orbit deployment failed. Please review the configuration and try again."
+  );
+};
 
 const CreateSubnetTx = () => {
   const { setRunAction, isApiSuccess, isLoading } = useOutletContext();
   const [progress, setProgress] = useState(0);
   const [activeStep, setActiveStep] = useState(0);
   const dispatch = useDispatch();
+  const networkDetails = useSelector((state) => state.wizard.networkDetails);
 
   const steps = [
     "Submitting Create Orbit Tx...",
@@ -18,12 +40,7 @@ const CreateSubnetTx = () => {
     "Storing in sidecar.json...",
   ];
 
-  useEffect(() => {
-    setRunAction(() => handleRunApi);
-    return () => setRunAction(null);
-  }, [setRunAction]);
-
-  const handleRunApi = async () => {
+  const handleRunApi = useCallback(async () => {
     const res = await dispatch.wizard.createsubnetTx({});
 
     const status = res?.status || res?.state;
@@ -64,12 +81,22 @@ const CreateSubnetTx = () => {
           });
         }, interval);
       });
-    } else if (status === "failure") {
-      const errorMsg = res?.message || "Orbit transaction failed";
+    } else if (status === "failure" || status === "failed") {
+      const errorMsg = getJobFailureMessage(res);
+      toast.error(errorMsg);
+      throw new Error(errorMsg);
+    } else {
+      const errorMsg =
+        "The Orbit transaction job returned an unexpected status. Please try again.";
       toast.error(errorMsg);
       throw new Error(errorMsg);
     }
-  };
+  }, [dispatch]);
+
+  useEffect(() => {
+    setRunAction(() => handleRunApi);
+    return () => setRunAction(null);
+  }, [setRunAction, handleRunApi]);
 
   return (
     <div className="max-w-6xl mx-auto pb-12">
@@ -78,10 +105,10 @@ const CreateSubnetTx = () => {
           <HiOutlineDocumentText size={24} />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-white ">CreateOrbitTx</h1>
+          <h1 className="text-2xl font-bold text-white ">Orbit Registration</h1>
           <p className="text-gray-400 text-sm max-w-2xl leading-relaxed font-normal">
-            Register the orbit on the RYT Chain. This is an automatic step — the
-            CLI submits the transaction.
+            Register the orbit on the RYT Execution Layer. This is an automatic
+            step — the CLI submits the transaction.
           </p>
         </div>
       </div>
@@ -94,6 +121,9 @@ const CreateSubnetTx = () => {
           Phase 2 — Deploy
         </span>
       </div>
+
+      <NetworkSummary network={networkDetails} />
+
       <div className="mb-6 flex items-start gap-3 rounded-xl border border-cyan-500/40 bg-[#111827] px-4 py-3">
         <svg
           className="mt-0.5 h-5 w-5 shrink-0 text-cyan-400"
@@ -108,9 +138,21 @@ const CreateSubnetTx = () => {
 
         <p className="text-sm leading-6 text-gray-400">
           Registers your Orbit under sovereign control with a{" "}
-          <span className="text-gray-200">1-of-1 </span>
-          authorization threshold. Control keys are automatically derived from
-          your Ledger.
+          <span className="inline-flex items-center gap-1 text-gray-200">
+            1-of-1 authorization threshold
+            <span className="group relative inline-flex">
+              <HiQuestionMarkCircle
+                aria-label="What does 1-of-1 authorization threshold mean?"
+                className="text-cyan-400 cursor-help"
+                size={15}
+              />
+              <span className="pointer-events-none absolute bottom-full left-0 z-20 mb-2 hidden w-72 rounded-lg border border-cyan-500/30 bg-[#060914] p-3 text-left text-xs font-normal normal-case leading-relaxed text-gray-300 shadow-xl group-hover:block group-focus-within:block">
+                A single key currently authorizes changes to this Orbit. You can
+                migrate to an M-of-N multisig after deployment.
+              </span>
+            </span>
+          </span>
+          . Control keys are automatically derived from your Ledger.
         </p>
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-1 gap-8">

@@ -3,11 +3,14 @@ import { useOutletContext } from "react-router-dom";
 import { HiOutlineLink, HiCheckCircle } from "react-icons/hi";
 import { toast } from "react-toastify";
 import { createChainTxSteps } from "../../utils";
+import { useSelector } from "react-redux";
+import NetworkSummary from "../../components/NetworkSummary";
 
 const CreateChainTx = () => {
   const { setRunAction, isApiSuccess, isLoading } = useOutletContext();
   const [progress, setProgress] = useState(0);
   const [activeStep, setActiveStep] = useState(0);
+  const networkDetails = useSelector((state) => state.wizard.networkDetails);
 
   useEffect(() => {
     setRunAction(() => handleRunApi);
@@ -54,7 +57,9 @@ const CreateChainTx = () => {
           <HiOutlineLink size={24} />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-white ">Create ChainTx</h1>
+          <h1 className="text-2xl font-bold text-white ">
+            Network Initialization
+          </h1>
           <p className="text-gray-400 text-sm max-w-2xl leading-relaxed font-normal">
             Initialize your sovereign Orbit chain on the newly provisioned
             Orbit. This step registers the chain infrastructure and establishes
@@ -71,6 +76,8 @@ const CreateChainTx = () => {
           Phase 2 — Deploy
         </span>
       </div>
+
+      <NetworkSummary network={networkDetails} />
 
       <div className="mb-6 flex items-start gap-3 rounded-xl border border-cyan-500/40 bg-[#111827] px-4 py-3">
         <svg

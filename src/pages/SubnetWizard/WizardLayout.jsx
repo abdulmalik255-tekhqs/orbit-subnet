@@ -10,24 +10,37 @@ const WizardLayout = () => {
   const location = useLocation();
   const [currentStep, setCurrentStep] = React.useState(1);
   const [runAction, setRunAction] = React.useState(null);
+  const [stepValidator, setStepValidator] = React.useState(null);
   const [isApiSuccess, setIsApiSuccess] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
 
   useEffect(() => {
     const path = location.pathname;
     let step = 1;
-    if (path === "/validator-owner" || path === "/") step = 1;
-    else if (path === "/config-defaults") step = 2;
-    else if (path === "/chain-id") step = 3;
-    else if (path === "/bootstrap-validators") step = 4;
-    else if (path === "/create-orbit-tx") step = 5;
-    else if (path === "/create-chain-tx") step = 6;
-    else if (path === "/convert-orbit") step = 7;
-    else if (path === "/deploy-vmc") step = 8;
-    else if (path === "/initialize-vmc") step = 9;
+
+    if (
+      path === "/" ||
+      path === "/validator-owner" ||
+      path === "/config-defaults"
+    ) {
+      step = 1;
+    } else if (path === "/chain-id") {
+      step = 2;
+    } else if (path === "/bootstrap-validators") {
+      step = 3;
+    } else if (path === "/create-orbit-tx") {
+      step = 4;
+    } else if (path === "/create-chain-tx") {
+      step = 5;
+    } else if (path === "/convert-orbit") {
+      step = 6;
+    } else if (path === "/initialize-vmc") {
+      step = 7;
+    }
 
     if (step !== currentStep) {
       setCurrentStep(step);
+      setStepValidator(null);
       setIsApiSuccess(false);
       setIsLoading(false);
     }
@@ -60,18 +73,28 @@ const WizardLayout = () => {
   const handleNext = async () => {
     if (isLoading) return;
 
-    // If there's a runAction for the current step, execute it first
-    // We check for runAction and only proceed to navigation if it succeeds
-    if (runAction && ![5, 6, 7, 8, 9].includes(currentStep)) {
+    const isActionStep = [4, 5, 6, 7].includes(currentStep);
+    if (isActionStep && !isApiSuccess) {
+      return;
+    }
+
+    if (stepValidator) {
+      try {
+        await stepValidator();
+      } catch (error) {
+        return;
+      }
+    }
+
+    if (runAction && !isActionStep) {
       setIsLoading(true);
       try {
         await runAction();
       } catch (error) {
-        console.error("Action failed, staying on current step", error);
+        return;
+      } finally {
         setIsLoading(false);
-        return; // Stop here if action fails
       }
-      setIsLoading(false);
     }
 
     if (currentStep < totalSteps) {
@@ -114,6 +137,7 @@ const WizardLayout = () => {
                 currentStep,
                 setCurrentStep,
                 setRunAction,
+                setStepValidator,
                 isApiSuccess,
                 isLoading,
               }}

@@ -1,24 +1,26 @@
-import React, { useState, useEffect } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { useOutletContext } from "react-router-dom";
 import {
   HiCheckCircle,
   HiOutlineLightningBolt,
+  // HiOutlineLink,
   HiExclamation,
 } from "react-icons/hi";
 import { toast } from "react-toastify";
 import { convertToOrbitSteps } from "../../utils";
+import { useSelector } from "react-redux";
+import NetworkSummary from "../../components/NetworkSummary";
 
 const ConvertL1 = () => {
   const { setRunAction, isApiSuccess, isLoading } = useOutletContext();
+  const validators = useSelector(
+    (state) => state.wizard.steps.bootstrap?.validators || [],
+  );
+  const networkDetails = useSelector((state) => state.wizard.networkDetails);
   const [progress, setProgress] = useState(0);
   const [activeStep, setActiveStep] = useState(0);
 
-  useEffect(() => {
-    setRunAction(() => handleRunApi);
-    return () => setRunAction(null);
-  }, [setRunAction]);
-
-  const handleRunApi = async () => {
+  const handleRun = useCallback(async () => {
     setProgress(0);
     setActiveStep(0);
 
@@ -49,7 +51,12 @@ const ConvertL1 = () => {
         });
       }, interval);
     });
-  };
+  }, []);
+
+  useEffect(() => {
+    setRunAction(() => handleRun);
+    return () => setRunAction(null);
+  }, [setRunAction, handleRun]);
 
   return (
     <div className="max-w-6xl mx-auto pb-12">
@@ -59,7 +66,7 @@ const ConvertL1 = () => {
           <HiOutlineLightningBolt size={24} />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-white">Convert To Orbit</h1>
+          <h1 className="text-2xl font-bold text-white">Sovereignty</h1>
           <p className="text-gray-400 text-sm max-w-3xl leading-relaxed font-normal">
             The most critical and irreversible transaction. Converts the orbit
             into a fully sovereign and registers bootstrap validators. After
@@ -81,6 +88,8 @@ const ConvertL1 = () => {
         </span>
       </div>
 
+      <NetworkSummary network={networkDetails} />
+
       {/* Warning Box */}
       <div className="bg-red-600/5 border border-red-500/20 rounded-xl p-5 mb-8 flex gap-4">
         <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center text-red-500 shrink-0 border border-red-500/20">
@@ -92,11 +101,11 @@ const ConvertL1 = () => {
           </h4>
           <p className="text-gray-400 text-[13px] leading-relaxed">
             This operation permanently establishes the Orbit as a sovereign
-            network. The transition cannot be reverted, and the initial
-            validator set will be permanently committed to the network
-            configuration.
-            {/* Please confirm you have backed up your sidecar.json and
-            genesis.json files. */}
+            network. Before this step, the Orbit is governed by the shared
+            staking layer. After this step, only the addresses set as Validator
+            Owner and the ValidatorManager contract can modify the validator
+            set. The initial validator set shown below will be permanently
+            committed to the network configuration.
           </p>
         </div>
       </div>

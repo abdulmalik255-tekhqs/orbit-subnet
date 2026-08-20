@@ -12,6 +12,7 @@ const wizard = {
     },
     loading: false,
     error: null,
+    networkDetails: {},
     createSubnetTxID: null,
     deployedBootstrapValidatorID: null,
   },
@@ -21,6 +22,9 @@ const wizard = {
     },
     setError(state, payload) {
       return { ...state, error: payload };
+    },
+    setNetworkDetails(state, payload) {
+      return { ...state, networkDetails: payload };
     },
     setCreateSubnetTxID(state, payload) {
       return { ...state, createSubnetTxID: payload };
@@ -51,6 +55,7 @@ const wizard = {
         },
         loading: false,
         error: null,
+        networkDetails: {},
       };
     },
   },
@@ -66,6 +71,11 @@ const wizard = {
           throw new Error(errorMsg);
         }
         if (res) {
+          dispatch.wizard.setNetworkDetails({
+            networkName: payload.networkName,
+            chainId: payload.chainId,
+            tokenSymbol: payload.tokenSymbol,
+          });
           // Step 2: Create orbit (if availability check passes)
           const createPayload = {
             networkName: payload.networkName,
@@ -129,13 +139,24 @@ const wizard = {
           payload,
         );
         if (response) {
+          const jobId =
+            response?.data?.jobId ||
+            response?.data?.id ||
+            response?.data?.data?.jobId ||
+            response?.data?.data?.id;
+
+          if (!jobId) {
+            throw new Error("Bootstrap deployment did not return a job ID");
+          }
+
           toast.success("Bootstrap validators deployed successfully!");
-          dispatch.wizard.setDeployedBootstrapValidatorID(
-            response?.data?.jobId,
-          );
+          dispatch.wizard.setDeployedBootstrapValidatorID(jobId);
           dispatch.wizard.updateStepData({
             step: "bootstrap",
-            data: response.data,
+            data: {
+              ...response.data,
+              validators: payload?.bootstrapValidators?.validators || [],
+            },
           });
           return response.data;
         }
@@ -150,17 +171,26 @@ const wizard = {
     async createsubnetTx(payload, rootState) {
       dispatch.wizard.setLoading(true);
       try {
-        const response = await axiosInstance.get(
-          `/jobs/${rootState.wizard.deployedBootstrapValidatorID}`,
-        );
-        if (response?.data?.state === "pending") {
+        const jobId = rootState.wizard.deployedBootstrapValidatorID;
+
+        if (!jobId) {
+          throw new Error(
+            "Bootstrap deployment job ID is missing. Complete the validator deployment first.",
+          );
+        }
+
+        const response = await axiosInstance.get(`/jobs/${jobId}`);
+        const jobData = response?.data?.data || response?.data;
+        const status = jobData?.status || jobData?.state;
+
+        if (["pending", "running", "success", "completed"].includes(status)) {
           toast.success("Orbit transaction created successfully!");
         }
         dispatch.wizard.updateStepData({
           step: "subnet",
-          data: response.data,
+          data: jobData,
         });
-        return response.data;
+        return jobData;
       } catch (error) {
         toast.error(error?.response?.data?.message || error.message);
         dispatch.wizard.setError(error.message);

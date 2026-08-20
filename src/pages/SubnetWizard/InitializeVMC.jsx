@@ -40,7 +40,6 @@ const InitializeVMC = () => {
 
         for (let i = 0; i < allLogs.length; i++) {
           setLogs((prev) => [...prev, allLogs[i]]);
-          // Simulate progress increment
           const stepProgress = 90 / allLogs.length;
           const startProgress = 10 + i * stepProgress;
 
@@ -58,8 +57,6 @@ const InitializeVMC = () => {
         toast.error(errorMsg);
         throw new Error(errorMsg);
       } else {
-        // Fallback for pending/running or other states if we want to simulate anyway
-        // or just throw if we only proceed on completed
         const errorMsg =
           "Transaction is still processing. Please try again in a moment.";
         toast.info(errorMsg);
@@ -104,6 +101,89 @@ const InitializeVMC = () => {
       return () => clearInterval(interval);
     }
   }, [isApiSuccess]);
+
+  const detailGroups = [
+    {
+      title: "Execution Layer Access",
+      description: "Connect to and identify the execution environment.",
+      fields: [
+        {
+          label: "ChainID",
+          value: deploymentResult?.result?.chainId,
+        },
+        {
+          label: "RPC Endpoint",
+          value: deploymentResult?.result?.rpcEndpoint,
+        },
+      ],
+    },
+    {
+      title: "Orbit Identity",
+      description: "Core identifiers for your deployed Orbit network.",
+      fields: [
+        {
+          label: "Network Name",
+          value: deploymentResult?.result?.subnetName,
+        },
+        {
+          label: "Blockchain ID (On-chain)",
+          value: deploymentResult?.result?.blockchainIdOnchain || "--",
+        },
+        {
+          label: "Orbit ID (On-chain)",
+          value: deploymentResult?.result?.subnetIdOnchain || "--",
+        },
+        {
+          label: "Orbit Explorer",
+          value: "http://3.129.128.112:3009/",
+        },
+      ],
+    },
+  ];
+
+  const renderDetail = (item) => (
+    <div key={item.label} className="flex flex-col gap-2 group">
+      <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
+        {item.label}
+      </span>
+      <div className="flex items-center justify-between gap-3 p-3 rounded-xl bg-[#060914] border border-white/5 group-hover:border-white/10 transition-colors">
+        {item.label === "Orbit Explorer" ? (
+          <a
+            href={item.value}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-[11px] text-emerald-400 font-mono break-all leading-relaxed hover:underline decoration-emerald-400/30"
+          >
+            {item.value}
+          </a>
+        ) : (
+          <code className="text-[11px] text-emerald-400 font-mono break-all leading-relaxed">
+            {item.value}
+          </code>
+        )}
+
+        {item.label !== "Network Name" && (
+          <CopyToClipboard
+            text={item.value}
+            onCopy={() =>
+              toast.success(`${item.label} copied!`, {
+                position: "bottom-right",
+                autoClose: 2000,
+              })
+            }
+          >
+            <button
+              type="button"
+              aria-label={`Copy ${item.label}`}
+              className="p-2 rounded-lg hover:bg-white/5 text-gray-500 hover:text-white transition-all shrink-0"
+            >
+              <HiOutlineDuplicate size={16} />
+            </button>
+          </CopyToClipboard>
+        )}
+      </div>
+    </div>
+  );
 
   return (
     <div className="max-w-6xl mx-auto pb-12">
@@ -212,80 +292,24 @@ const InitializeVMC = () => {
               </div>
 
               {/* Network Details */}
-              <div className="space-y-4 pt-4 border-t border-white/5">
-                {[
-                  {
-                    label: "Network Name",
-                    value: deploymentResult?.result?.subnetName,
-                  },
-                  {
-                    label: "ChainID",
-                    value: deploymentResult?.result?.chainId,
-                  },
-                  {
-                    label: "RPC Endpoint",
-                    value: deploymentResult?.result?.rpcEndpoint,
-                  },
-                  {
-                    label: "Blockchain ID (On-chain)",
-                    value: deploymentResult?.result?.blockchainIdOnchain
-                      ? deploymentResult?.result?.blockchainIdOnchain
-                      : "--",
-                  },
-                  {
-                    label: "Orbit ID (On-chain)",
-                    value: deploymentResult?.result?.subnetIdOnchain
-                      ? deploymentResult?.result?.subnetIdOnchain
-                      : "--",
-                  },
-                  {
-                    label: "Orbit Explorer",
-                    value: "http://3.129.128.112:3009/",
-                  },
-                ].map((item, idx) => (
-                  <div key={idx} className="flex flex-col gap-2 group">
-                    <span className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">
-                      {item.label}
-                    </span>
-                    <div className="flex items-center justify-between gap-3 p-3 rounded-xl bg-[#060914] border border-white/5 group-hover:border-white/10 transition-colors">
-                      {item.label === "Orbit Explorer" ? (
-                        <a
-                          href={item.value}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-[11px] text-emerald-400 font-mono break-all leading-relaxed hover:underline decoration-emerald-400/30"
-                        >
-                          {item.value}
-                        </a>
-                      ) : (
-                        <code className="text-[11px] text-emerald-400 font-mono break-all leading-relaxed">
-                          {item.value}
-                        </code>
-                      )}
-
-                      {[
-                        "ChainID",
-                        "RPC Endpoint",
-                        "Blockchain ID (On-chain)",
-                        "Orbit ID (On-chain)",
-                        "Orbit Explorer",
-                      ].includes(item.label) && (
-                        <CopyToClipboard
-                          text={item.value}
-                          onCopy={() =>
-                            toast.success(`${item.label} copied!`, {
-                              position: "bottom-right",
-                              autoClose: 2000,
-                            })
-                          }
-                        >
-                          <button className="p-2 rounded-lg hover:bg-white/5 text-gray-500 hover:text-white transition-all shrink-0">
-                            <HiOutlineDuplicate size={16} />
-                          </button>
-                        </CopyToClipboard>
-                      )}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 pt-4 border-t border-white/5">
+                {detailGroups.map((group) => (
+                  <section
+                    key={group.title}
+                    className="p-4 rounded-xl bg-[#060914]/60 border border-white/5 space-y-4"
+                  >
+                    <div>
+                      <h4 className="text-xs font-bold text-white uppercase tracking-wider">
+                        {group.title}
+                      </h4>
+                      <p className="text-[11px] text-gray-500 mt-1">
+                        {group.description}
+                      </p>
                     </div>
-                  </div>
+                    <div className="space-y-4">
+                      {group.fields.map(renderDetail)}
+                    </div>
+                  </section>
                 ))}
               </div>
             </div>

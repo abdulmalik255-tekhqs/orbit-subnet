@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo } from "react";
 import { HiOutlineServer } from "react-icons/hi";
 import { BsDatabase } from "react-icons/bs";
 import { useOutletContext } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import NetworkSummary from "../../components/NetworkSummary";
 
 const PRESET_VALIDATORS = [
   {
@@ -49,7 +52,7 @@ const ValidatorForm = ({
       </select>
     </div>
 
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+    <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
       <div>
         <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">
           Node ID
@@ -62,7 +65,7 @@ const ValidatorForm = ({
           className="w-full bg-[#0a0f1d] border border-[#1e293b] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-600 transition-colors"
         />
       </div>
-      <div>
+      {/* <div>
         <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">
           Weight
         </label>
@@ -73,9 +76,9 @@ const ValidatorForm = ({
           onChange={(e) => onChange(index, "weight", e.target.value)}
           className="w-full bg-[#0a0f1d] border border-[#1e293b] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-600 transition-colors"
         />
-      </div>
+      </div> */}
     </div>
-    <div className="mb-6">
+    {/* <div className="mb-6">
       <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">
         BLS Public Key (48 bytes)
       </label>
@@ -86,9 +89,9 @@ const ValidatorForm = ({
         onChange={(e) => onChange(index, "blsPublicKey", e.target.value)}
         className="w-full bg-[#0a0f1d] border border-[#1e293b] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-600 transition-colors"
       />
-    </div>
+    </div> */}
 
-    <div>
+    {/* <div>
       <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">
         BLS Proof of Possession (96 bytes)
       </label>
@@ -101,113 +104,53 @@ const ValidatorForm = ({
         }
         className="w-full bg-[#0a0f1d] border border-[#1e293b] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-600 transition-colors"
       />
-    </div>
+    </div> */}
   </div>
 );
 
 const BootstrapValidators = () => {
-  const [numValidators, setNumValidators] = useState("1");
-  const [nodeOption, setNodeOption] = useState("own");
-  const [validators, setValidators] = useState([
-    {
-      nodeId: "",
-      weight: "",
-      blsPublicKey: "",
-      blsProofOfPossession: "",
-      presetId: "",
-    },
-  ]);
-  const { setRunAction } = useOutletContext();
+  const { setRunAction, setStepValidator } = useOutletContext();
   const dispatch = useDispatch();
   const subnetId = useSelector((state) => state.wizard.createSubnetTxID);
+  const networkDetails = useSelector((state) => state.wizard.networkDetails);
 
-  useEffect(() => {
-    const count = parseInt(numValidators) || 0;
-    setValidators((prev) => {
-      const next = [...prev];
-      if (count > next.length) {
-        for (let i = next.length; i < count; i++) {
-          next.push({
-            nodeId: "",
-            weight: "100",
-            blsPublicKey: "",
-            blsProofOfPossession: "",
-            presetId: "",
-          });
-        }
-      } else {
-        return next.slice(0, count);
-      }
-      return next;
-    });
-  }, [numValidators]);
+  const createEmptyValidator = () => ({
+    nodeId: "",
+    weight: "100",
+    blsPublicKey: "",
+    blsProofOfPossession: "",
+    presetId: "",
+  });
 
-  const handleValidatorChange = (index, field, value) => {
-    setValidators((prev) => {
-      if (!prev[index]) return prev;
-      const next = [...prev];
-      next[index] = { ...next[index], [field]: value };
-      return next;
-    });
-  };
-
-  const handlePresetSelect = (index, presetId) => {
-    setValidators((prev) => {
-      if (!prev[index]) return prev;
-
-      const next = [...prev];
-
-      if (!presetId) {
-        next[index] = {
-          ...next[index],
-          presetId: "",
-        };
-        return next;
-      }
-
-      const selectedPreset = PRESET_VALIDATORS.find((v) => v.id === presetId);
-      if (!selectedPreset) return prev;
-
-      next[index] = {
-        ...next[index],
-        presetId: selectedPreset.id,
-        nodeId: selectedPreset.nodeId,
-        weight: selectedPreset.weight,
-        blsPublicKey: selectedPreset.blsPublicKey,
-        blsProofOfPossession: selectedPreset.blsProofOfPossession,
-      };
-
-      return next;
-    });
-  };
-
-  useEffect(() => {
-    setRunAction(() => async () => {
-      const count = parseInt(numValidators);
-      if (isNaN(count) || count < 1) {
-        const errorMsg =
-          "Please enter a valid number of validators (at least 1).";
-        toast.error(errorMsg);
-        throw new Error(errorMsg);
-      }
-
-      if (nodeOption === "own") {
-        const isValid = validators.every(
-          (v) =>
-            v.nodeId.trim() !== "" &&
-            v.weight.trim() !== "" &&
-            v.blsPublicKey.trim() !== "" &&
-            v.blsProofOfPossession.trim() !== "",
-        );
-
-        if (!isValid) {
-          const errorMsg = "Please fill in all validator fields.";
-          toast.error(errorMsg);
-          throw new Error(errorMsg);
-        }
-      }
-
-      let payload = {
+  const formik = useFormik({
+    initialValues: {
+      numValidators: "1",
+      nodeOption: "own",
+      validators: [createEmptyValidator()],
+    },
+    validationSchema: Yup.object({
+      numValidators: Yup.number()
+        .typeError("Validator count must be a number")
+        .integer("Validator count must be a whole number")
+        .min(1, "At least 1 validator is required")
+        .required("Validator count is required"),
+      validators: Yup.array().of(
+        Yup.object({
+          nodeId: Yup.string().trim().required("Node ID is required"),
+          weight: Yup.string().trim().required("Weight is required"),
+          blsPublicKey: Yup.string()
+            .trim()
+            .required("BLS public key is required"),
+          blsProofOfPossession: Yup.string()
+            .trim()
+            .required("BLS proof of possession is required"),
+        }),
+      ),
+    }),
+    validateOnChange: true,
+    validateOnBlur: true,
+    onSubmit: async (values) => {
+      const payload = {
         network: "private",
         walletName: "rytkey",
         avalanchegoVersion: "v1.13.5",
@@ -218,7 +161,7 @@ const BootstrapValidators = () => {
         subnetId: subnetId || "",
         outputTxPath: "",
         mainnetChainId: 0,
-        numNodes: count,
+        numNodes: Number(values.numValidators),
         nonSov: {
           sameControlKey: true,
           threshold: 0,
@@ -226,20 +169,20 @@ const BootstrapValidators = () => {
           subnetAuthKeys: [],
         },
         bootstrapValidators: {
-          validators: validators.map((v) => ({
+          validators: values.validators.map((v) => ({
             nodeId: v.nodeId,
             service: "rytNode1.service",
             configFile: "/home/admin/testNetwork/config/node1.json",
-            weight: Number(v.weight),
+            weight: Number(v.weight || 100),
             balance: 1000000000,
             blsPublicKey: v.blsPublicKey,
             blsProofOfPossession: v.blsProofOfPossession,
             changeOwnerAddr: "",
           })),
           jsonFilePath: "",
-          generateNodeId: nodeOption === "generate",
+          generateNodeId: values.nodeOption === "generate",
           bootstrapEndpoints: [],
-          numBootstrapValidators: count,
+          numBootstrapValidators: Number(values.numValidators),
           deployBalanceAvax: 0,
           deployWeight: 0,
           changeOwnerAddress: "",
@@ -300,10 +243,105 @@ const BootstrapValidators = () => {
 
       console.log("Bootstrap Validators Payload:", payload);
       await dispatch.wizard.bootstrapValidators(payload);
+    },
+  });
+
+  const syncValidatorList = (nextCountValue) => {
+    const rawCount = Number(nextCountValue);
+    const count = Number.isFinite(rawCount) && rawCount > 0 ? rawCount : 0;
+    const currentValidators = Array.isArray(formik.values.validators)
+      ? formik.values.validators
+      : [];
+
+    if (count <= 0) {
+      formik.setFieldValue("validators", [createEmptyValidator()]);
+      return;
+    }
+
+    const nextValidators = Array.from({ length: count }, (_, index) => {
+      return currentValidators[index] || createEmptyValidator();
     });
 
-    return () => setRunAction(null);
-  }, [numValidators, nodeOption, validators, dispatch, setRunAction, subnetId]);
+    formik.setFieldValue("validators", nextValidators);
+  };
+
+  const handleValidatorChange = (index, field, value) => {
+    formik.setFieldValue(`validators[${index}].${field}`, value);
+  };
+
+  const handlePresetSelect = (index, presetId) => {
+    if (!presetId) {
+      formik.setFieldValue(`validators[${index}].presetId`, "");
+      return;
+    }
+
+    const selectedPreset = PRESET_VALIDATORS.find((v) => v.id === presetId);
+    if (!selectedPreset) return;
+
+    const nextValidator = {
+      ...(formik.values.validators[index] || createEmptyValidator()),
+      presetId: selectedPreset.id,
+      nodeId: selectedPreset.nodeId,
+      weight: selectedPreset.weight,
+      blsPublicKey: selectedPreset.blsPublicKey,
+      blsProofOfPossession: selectedPreset.blsProofOfPossession,
+    };
+
+    formik.setFieldValue(`validators[${index}]`, nextValidator);
+  };
+
+  useEffect(() => {
+    const validateStep = async () => {
+      const errors = await formik.validateForm();
+      const touchedState = {
+        numValidators: true,
+        validators: (formik.values.validators || []).map(() => ({
+          nodeId: true,
+          weight: true,
+          blsPublicKey: true,
+          blsProofOfPossession: true,
+        })),
+      };
+
+      formik.setTouched(touchedState, true);
+
+      if (Object.keys(errors).length > 0) {
+        const firstError = Object.values(errors)
+          .flatMap((value) => {
+            if (Array.isArray(value)) {
+              return value.flatMap((nested) => {
+                if (typeof nested === "string") return [nested];
+                return Object.values(nested || {});
+              });
+            }
+            return [value];
+          })
+          .find(Boolean);
+
+        toast.error(firstError || "Please review the validator fields");
+        throw new Error(firstError || "Please review the validator fields");
+      }
+
+      return true;
+    };
+
+    setRunAction(() => async () => {
+      await validateStep();
+      await formik.submitForm();
+    });
+
+    setStepValidator(() => validateStep);
+
+    return () => {
+      setRunAction(null);
+      setStepValidator(null);
+    };
+  }, [setRunAction, setStepValidator]);
+
+  const validators = formik.values.validators || [];
+  const nodeOption = formik.values.nodeOption;
+  const numValidators = formik.values.numValidators;
+
   return (
     <div className="max-w-6xl mx-auto pb-12">
       <div className="flex items-start gap-4 mb-4">
@@ -312,7 +350,7 @@ const BootstrapValidators = () => {
         </div>
         <div>
           <h1 className="text-2xl font-bold text-white">
-            Validator Set Initialization
+            Bootstrap Validator Manifest
           </h1>
           <p className="text-gray-400 text-sm max-w-2xl leading-relaxed font-normal">
             Configure validator identities from active nodes.
@@ -329,6 +367,8 @@ const BootstrapValidators = () => {
         </span>
       </div>
 
+      <NetworkSummary network={networkDetails} />
+
       <div className="w-full mb-4 max-w-2xl">
         <label className="block text-[14px] font-bold text-white capitalize tracking-wider mb-2">
           Initial Validator Count <span className="text-red-500">*</span>
@@ -336,14 +376,22 @@ const BootstrapValidators = () => {
         <input
           type="text"
           value={numValidators}
-          onChange={(e) => setNumValidators(e.target.value)}
+          onChange={(e) =>
+            formik.setFieldValue("numValidators", e.target.value)
+          }
+          onBlur={formik.handleBlur}
           className="w-full bg-[#0a0f1d] border border-[#1e293b] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-600 transition-colors"
         />
+        {formik.touched.numValidators && formik.errors.numValidators && (
+          <p className="mt-2 text-[11px] text-red-400">
+            {formik.errors.numValidators}
+          </p>
+        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mb-4 max-w-2xl">
         <div
-          onClick={() => setNodeOption("own")}
+          onClick={() => formik.setFieldValue("nodeOption", "own")}
           className={`cursor-pointer rounded-xl p-6 border transition-all ${
             nodeOption === "own"
               ? "bg-[#0f172a] border-blue-600 ring-1 ring-blue-600"
@@ -363,8 +411,7 @@ const BootstrapValidators = () => {
                 I have my own nodes
               </div> */}
               <div className="text-white font-semibold mb-1 leading-relaxed">
-                Specify the Node IDs and BLS public keys used to initialize the
-                validator set.
+                Specify the Node IDs used to initialize the validator set.
               </div>
             </div>
           </div>

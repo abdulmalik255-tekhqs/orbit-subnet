@@ -8,7 +8,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 
 const ChainID = () => {
-  const { setRunAction } = useOutletContext();
+  const { setRunAction, setStepValidator } = useOutletContext();
   const dispatch = useDispatch();
 
   const formik = useFormik({
@@ -49,7 +49,7 @@ const ChainID = () => {
     formik.touched[fieldName] && formik.errors[fieldName];
 
   useEffect(() => {
-    setRunAction(() => async () => {
+    const validateStep = async () => {
       const errors = await formik.validateForm();
 
       formik.setTouched(
@@ -64,15 +64,24 @@ const ChainID = () => {
 
       if (Object.keys(errors).length > 0) {
         const firstError = Object.values(errors)[0];
-        // toast.error(firstError);
         throw new Error(firstError);
       }
 
+      return true;
+    };
+
+    setRunAction(() => async () => {
+      await validateStep();
       await formik.submitForm();
     });
 
-    return () => setRunAction(null);
-  }, [setRunAction]);
+    setStepValidator(() => validateStep);
+
+    return () => {
+      setRunAction(null);
+      setStepValidator(null);
+    };
+  }, [setRunAction, setStepValidator]);
 
   return (
     <div className="max-w-6xl mx-auto">
