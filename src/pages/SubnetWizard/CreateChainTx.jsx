@@ -61,9 +61,9 @@ const CreateChainTx = () => {
             Network Initialization
           </h1>
           <p className="text-gray-400 text-sm max-w-2xl leading-relaxed font-normal">
-            Initialize your sovereign Orbit chain on the newly provisioned
-            Orbit. This step registers the chain infrastructure and establishes
-            the initial genesis state.
+            Processing the on-chain transaction that initializes your network
+            and establishes the required configuration for it to become
+            operational.
           </p>
         </div>
       </div>
@@ -79,7 +79,7 @@ const CreateChainTx = () => {
 
       <NetworkSummary network={networkDetails} />
 
-      <div className="mb-6 flex items-start gap-3 rounded-xl border border-cyan-500/40 bg-[#111827] px-4 py-3">
+      {/* <div className="mb-6 flex items-start gap-3 rounded-xl border border-cyan-500/40 bg-[#111827] px-4 py-3">
         <svg
           className="mt-0.5 h-5 w-5 shrink-0 text-cyan-400"
           fill="none"
@@ -95,7 +95,7 @@ const CreateChainTx = () => {
           This transaction finalizes chain initialization and commits the
           initial network configuration.
         </p>
-      </div>
+      </div> */}
 
       <div className="grid grid-cols-1 lg:grid-cols-1 gap-8">
         {/* Left Column: Progress Steps */}

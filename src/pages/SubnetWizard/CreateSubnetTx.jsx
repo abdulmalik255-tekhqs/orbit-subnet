@@ -9,6 +9,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import NetworkSummary from "../../components/NetworkSummary";
 
+const ORBIT_TX_SUCCESS_TOAST_ID = "orbit-tx-created-success";
+
 const getJobFailureMessage = (job) => {
   const rawMessage = job?.errorMessage || job?.message || "";
   const isUnavailableDeployment =
@@ -73,7 +75,9 @@ const CreateSubnetTx = () => {
             if (next >= 100) {
               clearInterval(timer);
               setActiveStep(5); // All done
-              toast.success("Orbit transaction created successfully!");
+              toast.success("Orbit transaction created successfully!", {
+                toastId: ORBIT_TX_SUCCESS_TOAST_ID,
+              });
               resolve();
               return 100;
             }
@@ -107,8 +111,8 @@ const CreateSubnetTx = () => {
         <div>
           <h1 className="text-2xl font-bold text-white ">Orbit Registration</h1>
           <p className="text-gray-400 text-sm max-w-2xl leading-relaxed font-normal">
-            Register the orbit on the RYT Execution Layer. This is an automatic
-            step — the CLI submits the transaction.
+            Processing the on-chain registration transaction to officially
+            register your ORBIT and prepare it for deployment.
           </p>
         </div>
       </div>

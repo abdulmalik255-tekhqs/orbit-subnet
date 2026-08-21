@@ -5,6 +5,7 @@ import {
   HiOutlineLightningBolt,
   // HiOutlineLink,
   HiExclamation,
+  HiQuestionMarkCircle,
 } from "react-icons/hi";
 import { toast } from "react-toastify";
 import { convertToOrbitSteps } from "../../utils";
@@ -13,9 +14,9 @@ import NetworkSummary from "../../components/NetworkSummary";
 
 const ConvertL1 = () => {
   const { setRunAction, isApiSuccess, isLoading } = useOutletContext();
-  const validators = useSelector(
-    (state) => state.wizard.steps.bootstrap?.validators || [],
-  );
+  // const validators = useSelector(
+  //   (state) => state.wizard.steps.bootstrap?.validators || [],
+  // );
   const networkDetails = useSelector((state) => state.wizard.networkDetails);
   const [progress, setProgress] = useState(0);
   const [activeStep, setActiveStep] = useState(0);
@@ -68,9 +69,8 @@ const ConvertL1 = () => {
         <div>
           <h1 className="text-2xl font-bold text-white">Sovereignty</h1>
           <p className="text-gray-400 text-sm max-w-3xl leading-relaxed font-normal">
-            The most critical and irreversible transaction. Converts the orbit
-            into a fully sovereign and registers bootstrap validators. After
-            this, the orbit is no longer governed by stakers.
+            Processing the on-chain transaction that grants your network
+            independent control and establishes it as a sovereign blockchain.
           </p>
         </div>
       </div>
@@ -101,11 +101,24 @@ const ConvertL1 = () => {
           </h4>
           <p className="text-gray-400 text-[13px] leading-relaxed">
             This operation permanently establishes the Orbit as a sovereign
-            network. Before this step, the Orbit is governed by the shared
-            staking layer. After this step, only the addresses set as Validator
-            Owner and the ValidatorManager contract can modify the validator
-            set. The initial validator set shown below will be permanently
-            committed to the network configuration.
+            network{" "}
+            <span className="group relative inline-flex">
+              <HiQuestionMarkCircle
+                aria-label="What does 1-of-1 authorization threshold mean?"
+                className="text-cyan-400 cursor-help"
+                size={15}
+              />
+              <span className="pointer-events-none absolute bottom-full left-0 z-20 mb-2 hidden w-72 rounded-lg border border-cyan-500/30 bg-[#060914] p-3 text-left text-xs font-normal normal-case leading-relaxed text-gray-300 shadow-xl group-hover:block group-focus-within:block">
+                A Sovereign Network is an independent blockchain network with
+                its own governance, rules, validators, and control over its
+                operation.
+              </span>
+            </span>
+            . Before this step, the Orbit is governed by the shared staking
+            layer. After this step, only the addresses set as Validator Owner
+            and the ValidatorManager contract can modify the validator set. The
+            initial validator set shown below will be permanently committed to
+            the network configuration.
           </p>
         </div>
       </div>

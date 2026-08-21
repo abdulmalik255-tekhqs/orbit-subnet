@@ -184,7 +184,7 @@ const wizard = {
         const status = jobData?.status || jobData?.state;
 
         if (["pending", "running", "success", "completed"].includes(status)) {
-          toast.success("Orbit transaction created successfully!");
+          // Success feedback is handled in the CreateSubnetTx UI step to avoid duplicates.
         }
         dispatch.wizard.updateStepData({
           step: "subnet",

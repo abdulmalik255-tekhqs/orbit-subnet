@@ -202,9 +202,8 @@ const InitializeVMC = () => {
             via the Signature Aggregator.
           </p> */}
           <p className="text-gray-400 text-sm max-w-2xl leading-relaxed">
-            Register the bootstrap validator set through BLS signature
-            aggregation. The CLI automatically coordinates validator signatures
-            via the Signature Aggregator.
+            Setting up the Virtual Machine Controller and registering the
+            required network components so the blockchain can operate correctly.
           </p>
           <div className="flex gap-2 mt-4 mb-4">
             <span className="px-2 py-0.5 rounded bg-blue-500/10 border border-blue-500/20 text-blue-500 text-[10px] font-bold uppercase tracking-wider">
@@ -225,13 +224,18 @@ const InitializeVMC = () => {
         <div className="flex gap-3 p-4 rounded-xl bg-blue-500/5 border border-blue-500/10">
           <HiOutlineInformationCircle className="text-blue-500 text-lg shrink-0 mt-0.5" />
           <p className="text-[12px] text-gray-400 leading-relaxed italic">
+            This step initializes the Validator Manager, establishing the
+            components required for the network’s consensus mechanism to
+            operate.
+          </p>
+          {/* <p className="text-[12px] text-gray-400 leading-relaxed italic">
             This step calls{" "}
             <span className="text-white font-mono">initialize()</span> on the
             ValidatorManager. For PoM consensus, it calls
             <span className="text-white font-mono ml-1">
               InitializeProofOfMajority()
             </span>
-          </p>
+          </p> */}
         </div>
 
         {/* Progress Section */}

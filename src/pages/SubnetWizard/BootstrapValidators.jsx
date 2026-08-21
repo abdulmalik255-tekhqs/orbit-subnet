@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo } from "react";
-import { HiOutlineServer } from "react-icons/hi";
+import React, { useEffect } from "react";
+import { HiOutlineServer, HiQuestionMarkCircle } from "react-icons/hi";
 import { BsDatabase } from "react-icons/bs";
 import { useOutletContext } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -246,24 +246,24 @@ const BootstrapValidators = () => {
     },
   });
 
-  const syncValidatorList = (nextCountValue) => {
-    const rawCount = Number(nextCountValue);
-    const count = Number.isFinite(rawCount) && rawCount > 0 ? rawCount : 0;
-    const currentValidators = Array.isArray(formik.values.validators)
-      ? formik.values.validators
-      : [];
+  // const syncValidatorList = (nextCountValue) => {
+  //   const rawCount = Number(nextCountValue);
+  //   const count = Number.isFinite(rawCount) && rawCount > 0 ? rawCount : 0;
+  //   const currentValidators = Array.isArray(formik.values.validators)
+  //     ? formik.values.validators
+  //     : [];
 
-    if (count <= 0) {
-      formik.setFieldValue("validators", [createEmptyValidator()]);
-      return;
-    }
+  //   if (count <= 0) {
+  //     formik.setFieldValue("validators", [createEmptyValidator()]);
+  //     return;
+  //   }
 
-    const nextValidators = Array.from({ length: count }, (_, index) => {
-      return currentValidators[index] || createEmptyValidator();
-    });
+  //   const nextValidators = Array.from({ length: count }, (_, index) => {
+  //     return currentValidators[index] || createEmptyValidator();
+  //   });
 
-    formik.setFieldValue("validators", nextValidators);
-  };
+  //   formik.setFieldValue("validators", nextValidators);
+  // };
 
   const handleValidatorChange = (index, field, value) => {
     formik.setFieldValue(`validators[${index}].${field}`, value);
@@ -371,6 +371,19 @@ const BootstrapValidators = () => {
 
       <div className="w-full mb-4 max-w-2xl">
         <label className="block text-[14px] font-bold text-white capitalize tracking-wider mb-2">
+          <span className="group relative inline-flex">
+            <HiQuestionMarkCircle
+              aria-label="What does 1-of-1 authorization threshold mean?"
+              className="text-cyan-400 cursor-help"
+              size={15}
+            />
+            <span className="pointer-events-none absolute bottom-full left-0 z-20 mb-2 hidden w-72 rounded-lg border border-cyan-500/30 bg-[#060914] p-3 text-left text-xs font-normal normal-case leading-relaxed text-gray-300 shadow-xl group-hover:block group-focus-within:block">
+              Bootstrap Validators are the initial trusted nodes that help your
+              network start and establish communication with other validators.
+              The details provided here are used to identify and connect these
+              validators during network deployment
+            </span>
+          </span>
           Initial Validator Count <span className="text-red-500">*</span>
         </label>
         <input
