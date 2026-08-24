@@ -8,6 +8,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import NetworkSummary from "../../components/NetworkSummary";
+import { orbitRegistrationStep } from "../../utils";
 
 const ORBIT_TX_SUCCESS_TOAST_ID = "orbit-tx-created-success";
 
@@ -33,14 +34,6 @@ const CreateSubnetTx = () => {
   const [activeStep, setActiveStep] = useState(0);
   const dispatch = useDispatch();
   const networkDetails = useSelector((state) => state.wizard.networkDetails);
-
-  const steps = [
-    "Submitting Create Orbit Tx...",
-    "Waiting for confirmation...",
-    "Signing transaction with Ledger...",
-    "Extracting Orbit ID from transaction...",
-    "Storing in sidecar.json...",
-  ];
 
   const handleRunApi = useCallback(async () => {
     const res = await dispatch.wizard.createsubnetTx({});
@@ -75,7 +68,7 @@ const CreateSubnetTx = () => {
             if (next >= 100) {
               clearInterval(timer);
               setActiveStep(5); // All done
-              toast.success("Orbit transaction created successfully!", {
+              toast.success("Orbit Registration created successfully!", {
                 toastId: ORBIT_TX_SUCCESS_TOAST_ID,
               });
               resolve();
@@ -171,7 +164,7 @@ const CreateSubnetTx = () => {
             </div>
 
             <div className="space-y-3 px-1">
-              {steps.map((text, index) => {
+              {orbitRegistrationStep.map((text, index) => {
                 const isActive = index <= activeStep;
                 const isCompleted = index < activeStep || isApiSuccess;
 

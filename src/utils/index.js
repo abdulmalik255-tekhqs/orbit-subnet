@@ -39,8 +39,8 @@ export const totalSteps = 7;
 export const allLogs = [
   "Verifying bootstrap validator node synchronization...",
   "Waiting for Orbit block production (30–60s)...",
-  "Initializing BLS signature aggregation...",
-  "Collecting validator BLS signatures...",
+  "Initializing signature aggregation...",
+  "Collecting validator signatures...",
   "Invoking initialize() on the VMC proxy...",
   "Finalizing deployment state...",
 ];
@@ -67,4 +67,11 @@ export const convertToOrbitSteps = [
   "Registering bootstrap validator set...",
   "Assigning validator validation IDs...",
   // "Persisting deployment metadata to sidecar.json...",
+];
+export const orbitRegistrationStep = [
+  "Submitting Orbit Registration...",
+  "Waiting for confirmation...",
+  "Signing transaction with Ledger...",
+  "Extracting Orbit ID from transaction...",
+  "Storing in sidecar.json...",
 ];

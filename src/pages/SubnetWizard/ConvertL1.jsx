@@ -44,7 +44,7 @@ const ConvertL1 = () => {
           if (next >= 100) {
             clearInterval(timer);
             setActiveStep(5); // All done
-            toast.success("Orbit converted  successfully!");
+            toast.success("Sovereignty established successfully!");
             resolve();
             return 100;
           }

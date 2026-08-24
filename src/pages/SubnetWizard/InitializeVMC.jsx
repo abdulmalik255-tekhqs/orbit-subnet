@@ -34,7 +34,7 @@ const InitializeVMC = () => {
         setDeploymentResult(res);
         setProgress(10);
         setLogs([
-          "Orbit transaction confirmed.",
+          "Initialize Validator Manager confirmed.",
           "Starting final deployment sequence...",
         ]);
 

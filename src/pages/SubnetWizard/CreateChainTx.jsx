@@ -40,7 +40,7 @@ const CreateChainTx = () => {
           if (next >= 100) {
             clearInterval(timer);
             setActiveStep(5); // All done
-            toast.success("Chain transaction created successfully!");
+            toast.success("Network Initialization created successfully!");
             resolve();
             return 100;
           }
