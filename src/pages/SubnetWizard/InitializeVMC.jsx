@@ -14,6 +14,7 @@ import { toast } from "react-toastify";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import confetti from "canvas-confetti";
 import { allLogs } from "../../utils";
+import { explorerUrl } from "../../app.config";
 
 const InitializeVMC = () => {
   const { setRunAction, isApiSuccess, isLoading } = useOutletContext();
@@ -135,7 +136,7 @@ const InitializeVMC = () => {
         },
         {
           label: "Orbit Explorer",
-          value: "http://3.129.128.112:3009/",
+          value: `${explorerUrl}/${deploymentResult?.result?.chainId}`,
         },
       ],
     },
@@ -332,7 +333,7 @@ const InitializeVMC = () => {
                     Open Orbit Explorer
                   </span>
                   <a
-                    href="http://3.129.128.112:3009/"
+                    href={`${explorerUrl}/${deploymentResult?.result?.chainId}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 rounded-lg bg-blue-500 px-4 py-2 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(59,130,246,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-blue-400 hover:shadow-[0_12px_28px_rgba(59,130,246,0.45)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300"

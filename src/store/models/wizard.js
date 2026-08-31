@@ -110,7 +110,7 @@ const wizard = {
             ],
           };
           const response = await axiosInstance.post("/subnets", createPayload);
-          toast.success("Orbit created successfully!");
+          toast.success("Orbit deployment initialized successfully!");
           // Store response data
           dispatch.wizard.setCreateSubnetTxID(response?.data?.id);
           dispatch.wizard.updateStepData({
