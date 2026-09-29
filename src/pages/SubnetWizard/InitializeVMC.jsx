@@ -109,23 +109,23 @@ const InitializeVMC = () => {
       description: "Connect to and identify the execution environment.",
       fields: [
         {
+          label: "Network Name",
+          value: deploymentResult?.result?.subnetName,
+        },
+        {
           label: "ChainID",
           value: deploymentResult?.result?.chainId,
         },
-        {
-          label: "RPC Endpoint",
-          value: deploymentResult?.result?.rpcEndpoint,
-        },
+        // {
+        //   label: "RPC Endpoint",
+        //   value: deploymentResult?.result?.rpcEndpoint,
+        // },
       ],
     },
     {
       title: "Orbit Identity",
       description: "Core identifiers for your deployed Orbit network.",
       fields: [
-        {
-          label: "Network Name",
-          value: deploymentResult?.result?.subnetName,
-        },
         {
           label: "Blockchain ID (On-chain)",
           value: deploymentResult?.result?.blockchainIdOnchain || "--",

@@ -1,4 +1,4 @@
-import axiosInstance, { dockerInstance } from "../../api/axios";
+import axiosInstance, { dockerInstance, userInstance } from "../../api/axios";
 import { toast } from "react-toastify";
 
 const wizard = {
@@ -301,6 +301,21 @@ const wizard = {
               `/docker/deployIndexer`,
               dockerPayload,
             );
+
+            try {
+              const apiKeyPayload = {
+                name: result?.subnetName,
+                chainID: Number(result?.chainId),
+                rpcUrl: result?.rpcEndpoint,
+                ipAddress: "192.168.0.90",
+              };
+              await userInstance.post(
+                `/user/createAPIKeyAndRpcConfig`,
+                apiKeyPayload,
+              );
+            } catch (error) {
+              toast.error(error?.response?.data?.message || error.message);
+            }
             if (res && (res.status === 200 || res.status === 201 || res.data)) {
               dispatch.wizard.updateStepData({
                 step: "subnet",

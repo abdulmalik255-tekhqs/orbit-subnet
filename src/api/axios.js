@@ -14,6 +14,13 @@ export const dockerInstance = axios.create({
     "x-api-key": baseApiKey,
   },
 });
+export const userInstance = axios.create({
+  baseURL: process.env.REACT_APP_USER_API_URL,
+  headers: {
+    "Content-Type": "application/json",
+    "x-api-key": baseApiKey,
+  },
+});
 const responseInterceptor = (response) => response;
 
 const errorInterceptor = (error) => {
@@ -24,5 +31,7 @@ const errorInterceptor = (error) => {
 axiosInstance.interceptors.response.use(responseInterceptor, errorInterceptor);
 
 dockerInstance.interceptors.response.use(responseInterceptor, errorInterceptor);
+
+userInstance.interceptors.response.use(responseInterceptor, errorInterceptor);
 
 export default axiosInstance;

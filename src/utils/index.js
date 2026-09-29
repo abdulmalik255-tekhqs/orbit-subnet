@@ -38,10 +38,10 @@ export const totalSteps = 7;
 
 export const allLogs = [
   "Verifying bootstrap validator node synchronization...",
-  "Waiting for Orbit block production (30–60s)...",
+  // "Waiting for Orbit block production (30–60s)...",
   "Initializing signature aggregation...",
   "Collecting validator signatures...",
-  "Invoking initialize() on the VMC proxy...",
+  // "Invoking initialize() on the VMC proxy...",
   "Finalizing deployment state...",
 ];
 
@@ -54,24 +54,19 @@ export const deployVmcSteps = [
 ];
 
 export const createChainTxSteps = [
-  "Submitting Network Initialization...",
-  "Awaiting transaction confirmation...",
-  "Authorizing Create Chain transaction...",
-  "Resolving Blockchain ID and VM ID...",
-  // "Persisting deployment metadata to sidecar.json...",
+  "Sets up the core of your Orbit network on-chain.",
+  "Network configuration is applied.",
+  "Issues the unique identifiers used in the next steps.",
 ];
 
 export const convertToOrbitSteps = [
-  "Submitting Sovereignty ...",
-  "Awaiting transaction finalization (~30s)...",
-  "Registering bootstrap validator set...",
-  "Assigning validator validation IDs...",
-  // "Persisting deployment metadata to sidecar.json...",
+  "Converting your network to run under its own sovereign validator set.",
+  "Registering the bootstrap validators that secure the network at launch.",
+  "Assigning each validator a unique on-chain validation ID.",
 ];
 export const orbitRegistrationStep = [
-  "Submitting Orbit Registration...",
-  "Waiting for confirmation...",
-  "Signing transaction with Ledger...",
-  "Extracting Orbit ID from transaction...",
-  "Storing in sidecar.json...",
+  "Registering your Orbit off-chain under sovereign control.",
+  "Registering bootstrap validator set...",
+  "Authorizing  the registration with your Ledger-derived control keys.",
+  "Preparing your Orbit for network initialization.",
 ];
