@@ -9,7 +9,7 @@ import {
 } from "react-icons/hi";
 import { LuRocket } from "react-icons/lu";
 import { BsTrophy } from "react-icons/bs";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import confetti from "canvas-confetti";
@@ -17,24 +17,54 @@ import { allLogs } from "../../utils";
 import { explorerUrl } from "../../app.config";
 
 const InitializeVMC = () => {
-  const { setRunAction, isApiSuccess, isLoading } = useOutletContext();
+  const {
+    setRunAction,
+    setDeployAction,
+    isApiSuccess,
+    isLoading,
+    isDeploying,
+    isDeploySuccess,
+  } = useOutletContext();
   const [progress, setProgress] = useState(0);
   const [logs, setLogs] = useState([]);
   const [deploymentResult, setDeploymentResult] = useState(null);
   const dispatch = useDispatch();
+  const bootstrapPayload = useSelector(
+    (state) => state.wizard.bootstrapPayload,
+  );
+
+  // Deploy sends the manifest collected on the validator step and returns the
+  // job the initialize action below reads.
+  useEffect(() => {
+    setDeployAction(() => async () => {
+      setProgress(0);
+      setLogs(["Submitting bootstrap validator manifest..."]);
+
+      await dispatch.wizard.bootstrapValidators(bootstrapPayload);
+
+      setProgress(5);
+      setLogs([
+        "Bootstrap validator manifest submitted.",
+        "Deployment job accepted.",
+      ]);
+    });
+
+    return () => setDeployAction(null);
+  }, [setDeployAction, dispatch, bootstrapPayload]);
 
   useEffect(() => {
     setRunAction(() => async () => {
       setProgress(5);
-      setLogs(["Initiating final initialization..."]);
+      setLogs((prev) => [...prev, "Initiating final initialization..."]);
 
-      const res = await dispatch.wizard.initializeOrbitDeployment({});
+      const res = await dispatch.wizard.initializeRiffDeployment({});
       const status = res?.state || res?.status;
 
       if (status === "completed" || status === "success") {
         setDeploymentResult(res);
         setProgress(10);
-        setLogs([
+        setLogs((prev) => [
+          ...prev,
           "Initialize Validator Manager confirmed.",
           "Starting final deployment sequence...",
         ]);
@@ -123,19 +153,19 @@ const InitializeVMC = () => {
       ],
     },
     {
-      title: "Orbit Identity",
-      description: "Core identifiers for your deployed Orbit network.",
+      title: "Riff Identity",
+      description: "Core identifiers for your deployed Riff network.",
       fields: [
         {
           label: "Blockchain ID (On-chain)",
           value: deploymentResult?.result?.blockchainIdOnchain || "--",
         },
         {
-          label: "Orbit ID (On-chain)",
+          label: "Riff ID (On-chain)",
           value: deploymentResult?.result?.subnetIdOnchain || "--",
         },
         {
-          label: "Orbit Explorer",
+          label: "Riff Explorer",
           value: `${explorerUrl}/${deploymentResult?.result?.chainId}`,
         },
       ],
@@ -148,7 +178,7 @@ const InitializeVMC = () => {
         {item.label}
       </span>
       <div className="flex items-center justify-between gap-3 p-3 rounded-xl bg-[#060914] border border-white/5 group-hover:border-white/10 transition-colors">
-        {item.label === "Orbit Explorer" ? (
+        {item.label === "Riff Explorer" ? (
           <a
             href={item.value}
             target="_blank"
@@ -240,7 +270,7 @@ const InitializeVMC = () => {
         </div>
 
         {/* Progress Section */}
-        {(isLoading || isApiSuccess) && (
+        {(isDeploying || isDeploySuccess || isLoading || isApiSuccess) && (
           <div className="space-y-6">
             <div className="relative h-1.5 w-full bg-[#0d1225] rounded-full overflow-hidden">
               <div
@@ -264,7 +294,7 @@ const InitializeVMC = () => {
                   </span>
                 </div>
               ))}
-              {isLoading && (
+              {(isDeploying || isLoading) && (
                 <div className="flex items-center gap-3 text-gray-500 ml-0.5 animate-pulse">
                   <div className="w-4 h-4 rounded-full border-2 border-gray-700 border-t-blue-500 animate-spin" />
                   <span className="text-[12px]">
@@ -289,7 +319,7 @@ const InitializeVMC = () => {
                     Deployment Complete
                   </h3>
                   <p className="text-[11px] text-gray-500 mt-1">
-                    Your Orbit is fully live on Titan testnet with sovereign
+                    Your Riff is fully live on RYT Mainnet with sovereign
                     control. All bootstrap validators are registered and the
                     network is operational.
                   </p>
@@ -326,18 +356,18 @@ const InitializeVMC = () => {
               </div>
               <div className="space-y-2">
                 <h2 className="text-2xl font-bold text-white tracking-tight">
-                  Your Orbit is Live
+                  Your Riff is Live
                 </h2>
                 <div className="mt-3 inline-flex flex-col items-center gap-2 rounded-xl border border-blue-500/30 bg-blue-500/5 px-4 py-3">
                   <span className="text-[11px] uppercase tracking-[0.18em] text-blue-300">
-                    Open Orbit Explorer
+                    Open Riff Explorer
                   </span>
                   <a
                     href={`${explorerUrl}/${deploymentResult?.result?.chainId}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 rounded-lg bg-blue-500 px-4 py-2 text-sm font-semibold text-white shadow-[0_8px_20px_rgba(59,130,246,0.35)] transition-all duration-200 hover:-translate-y-0.5 hover:bg-blue-400 hover:shadow-[0_12px_28px_rgba(59,130,246,0.45)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300"
-                    aria-label="Open Orbit Explorer in a new tab"
+                    aria-label="Open Riff Explorer in a new tab"
                   >
                     Launch Explorer
                     <span aria-hidden="true">↗</span>
@@ -347,8 +377,8 @@ const InitializeVMC = () => {
                   </span> */}
                 </div>
                 <p className="text-gray-500 text-sm max-w-sm leading-relaxed">
-                  All {totalSteps} steps completed successfully. Your RYT Orbit
-                  blockchain is now operational on Titan testnet with sovereign
+                  All {totalSteps} steps completed successfully. Your RYT Riff
+                  blockchain is now operational on RYT Mainnet with sovereign
                   validator management.
                 </p>
               </div>

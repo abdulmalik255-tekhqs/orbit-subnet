@@ -14,42 +14,32 @@ const PRESET_VALIDATORS = [
     label: "Validator Node 1",
     nodeId: "NodeID-EAYeSnMjfPwa5icwfVEiEcwMmGRAJQJoL",
     weight: "20",
+    service: "rytNode1.service",
+    configFile: "/home/admin/testNetwork/config/node1.json",
     blsPublicKey:
       "0x93dec875b66f52a9a349cdae963ed194b2287f76fc15cec7be23bc936ab6a2e8f1f91ebd8aa89666e1334fd407c3a346",
     blsProofOfPossession:
       "0x828499204d8275e23e5165c9b498b287551c9ab563aca94ed04723fd89850b38e45011b7238a6278f62d9da5e3d09fee13476290d9b393d869df86b8ffba1bfd631887a66fed04f53e0397bec486a8651ec16b354831d7643038c575b2621682",
   },
+  {
+    id: "validator-node-2",
+    label: "Validator Node 2",
+    nodeId: "NodeID-5Qfa31WgtjmcsUoqDhR6hk3iFFVVwKTgG",
+    weight: "20",
+    service: "rytNode2.service",
+    configFile: "/home/admin/testNetwork/config/node2.json",
+    blsPublicKey:
+      "0xb184b64f970377d95476d425c4804dc5c5d7720fc25a3e0281e9e0ff3def974a97270597f80303e06ace6ea917675473",
+    blsProofOfPossession:
+      "0x97bc489a3ac2ecc477013e3e574a23b92da538e689ccea19fa7fbf7be873f840185b3a64ca056cb14b92079001cbba2512f62975d8c4e8dcd06bbe588538122b331ebddef1ecfbe79804a59f582e22285d4fc818278ed5171193c158f5bc9495",
+  },
 ];
 
-const ValidatorForm = ({
-  index,
-  data = {},
-  onChange,
-  onSelectPreset,
-  presetOptions,
-}) => (
+const ValidatorForm = ({ index, data = {}, onChange }) => (
   <div className="bg-[#0f172a] border border-[#1e293b] rounded-xl p-6 mb-4">
     <div className="flex items-center gap-2 mb-6">
       <BsDatabase className="text-blue-500" size={16} />
       <span className="text-white font-semibold">Validator {index + 1}</span>
-    </div>
-
-    <div className="mb-6">
-      <label className="block text-[11px] font-bold text-gray-500 uppercase tracking-wider mb-2">
-        Preset Validator
-      </label>
-      <select
-        value={data?.presetId || ""}
-        onChange={(e) => onSelectPreset(index, e.target.value)}
-        className="w-full bg-[#0a0f1d] border border-[#1e293b] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-600 transition-colors cursor-pointer"
-      >
-        <option value="">Custom</option>
-        {presetOptions.map((preset) => (
-          <option key={preset.id} value={preset.id}>
-            {preset.label}
-          </option>
-        ))}
-      </select>
     </div>
 
     <div className="grid grid-cols-1 md:grid-cols-1 gap-6">
@@ -114,26 +104,21 @@ const BootstrapValidators = () => {
   const subnetId = useSelector((state) => state.wizard.createSubnetTxID);
   const networkDetails = useSelector((state) => state.wizard.networkDetails);
 
-  const createEmptyValidator = () => ({
-    nodeId: "",
-    weight: "100",
-    blsPublicKey: "",
-    blsProofOfPossession: "",
-    presetId: "",
+  const createValidatorFromPreset = (preset) => ({
+    nodeId: preset.nodeId,
+    weight: preset.weight,
+    blsPublicKey: preset.blsPublicKey,
+    blsProofOfPossession: preset.blsProofOfPossession,
+    service: preset.service,
+    configFile: preset.configFile,
   });
 
   const formik = useFormik({
     initialValues: {
-      numValidators: "1",
       nodeOption: "own",
-      validators: [createEmptyValidator()],
+      validators: PRESET_VALIDATORS.map(createValidatorFromPreset),
     },
     validationSchema: Yup.object({
-      numValidators: Yup.number()
-        .typeError("Validator count must be a number")
-        .integer("Validator count must be a whole number")
-        .min(1, "At least 1 validator is required")
-        .required("Validator count is required"),
       validators: Yup.array().of(
         Yup.object({
           nodeId: Yup.string().trim().required("Node ID is required"),
@@ -161,7 +146,7 @@ const BootstrapValidators = () => {
         subnetId: subnetId || "",
         outputTxPath: "",
         mainnetChainId: 0,
-        numNodes: Number(values.numValidators),
+        numNodes: values.validators.length,
         nonSov: {
           sameControlKey: true,
           threshold: 0,
@@ -171,8 +156,8 @@ const BootstrapValidators = () => {
         bootstrapValidators: {
           validators: values.validators.map((v) => ({
             nodeId: v.nodeId,
-            service: "rytNode1.service",
-            configFile: "/home/admin/testNetwork/config/node1.json",
+            service: v.service,
+            configFile: v.configFile,
             weight: Number(v.weight || 100),
             balance: 1000000000,
             blsPublicKey: v.blsPublicKey,
@@ -182,7 +167,7 @@ const BootstrapValidators = () => {
           jsonFilePath: "",
           generateNodeId: values.nodeOption === "generate",
           bootstrapEndpoints: [],
-          numBootstrapValidators: Number(values.numValidators),
+          numBootstrapValidators: values.validators.length,
           deployBalanceAvax: 0,
           deployWeight: 0,
           changeOwnerAddress: "",
@@ -241,60 +226,25 @@ const BootstrapValidators = () => {
         },
       };
 
-      console.log("Bootstrap Validators Payload:", payload);
-      await dispatch.wizard.bootstrapValidators(payload);
+      // The manifest is only stored here; it is deployed from the final step.
+      dispatch.wizard.setBootstrapPayload(payload);
+      dispatch.wizard.updateStepData({
+        step: "bootstrap",
+        data: {
+          validators: payload.bootstrapValidators.validators,
+        },
+      });
     },
   });
 
-  // const syncValidatorList = (nextCountValue) => {
-  //   const rawCount = Number(nextCountValue);
-  //   const count = Number.isFinite(rawCount) && rawCount > 0 ? rawCount : 0;
-  //   const currentValidators = Array.isArray(formik.values.validators)
-  //     ? formik.values.validators
-  //     : [];
-
-  //   if (count <= 0) {
-  //     formik.setFieldValue("validators", [createEmptyValidator()]);
-  //     return;
-  //   }
-
-  //   const nextValidators = Array.from({ length: count }, (_, index) => {
-  //     return currentValidators[index] || createEmptyValidator();
-  //   });
-
-  //   formik.setFieldValue("validators", nextValidators);
-  // };
-
   const handleValidatorChange = (index, field, value) => {
     formik.setFieldValue(`validators[${index}].${field}`, value);
-  };
-
-  const handlePresetSelect = (index, presetId) => {
-    if (!presetId) {
-      formik.setFieldValue(`validators[${index}].presetId`, "");
-      return;
-    }
-
-    const selectedPreset = PRESET_VALIDATORS.find((v) => v.id === presetId);
-    if (!selectedPreset) return;
-
-    const nextValidator = {
-      ...(formik.values.validators[index] || createEmptyValidator()),
-      presetId: selectedPreset.id,
-      nodeId: selectedPreset.nodeId,
-      weight: selectedPreset.weight,
-      blsPublicKey: selectedPreset.blsPublicKey,
-      blsProofOfPossession: selectedPreset.blsProofOfPossession,
-    };
-
-    formik.setFieldValue(`validators[${index}]`, nextValidator);
   };
 
   useEffect(() => {
     const validateStep = async () => {
       const errors = await formik.validateForm();
       const touchedState = {
-        numValidators: true,
         validators: (formik.values.validators || []).map(() => ({
           nodeId: true,
           weight: true,
@@ -340,7 +290,6 @@ const BootstrapValidators = () => {
 
   const validators = formik.values.validators || [];
   const nodeOption = formik.values.nodeOption;
-  const numValidators = formik.values.numValidators;
 
   return (
     <div className="max-w-6xl mx-auto pb-12">
@@ -373,7 +322,7 @@ const BootstrapValidators = () => {
         <label className="block text-[14px] font-bold text-white capitalize tracking-wider mb-2">
           <span className="group relative inline-flex">
             <HiQuestionMarkCircle
-              aria-label="What does 1-of-1 authorization threshold mean?"
+              aria-label="What are bootstrap validators?"
               className="text-cyan-400 cursor-help"
               size={15}
             />
@@ -384,22 +333,8 @@ const BootstrapValidators = () => {
               validators during network deployment
             </span>
           </span>
-          Initial Validator Count <span className="text-red-500">*</span>
+          Bootstrap Validators <span className="text-red-500">*</span>
         </label>
-        <input
-          type="text"
-          value={numValidators}
-          onChange={(e) =>
-            formik.setFieldValue("numValidators", e.target.value)
-          }
-          onBlur={formik.handleBlur}
-          className="w-full bg-[#0a0f1d] border border-[#1e293b] rounded-lg px-4 py-3 text-white focus:outline-none focus:border-blue-600 transition-colors"
-        />
-        {formik.touched.numValidators && formik.errors.numValidators && (
-          <p className="mt-2 text-[11px] text-red-400">
-            {formik.errors.numValidators}
-          </p>
-        )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-1 gap-4 mb-4 max-w-2xl">
@@ -459,8 +394,6 @@ const BootstrapValidators = () => {
             index={i}
             data={data}
             onChange={handleValidatorChange}
-            onSelectPreset={handlePresetSelect}
-            presetOptions={PRESET_VALIDATORS}
           />
         ))}
       </div>

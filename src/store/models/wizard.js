@@ -15,6 +15,7 @@ const wizard = {
     networkDetails: {},
     createSubnetTxID: null,
     deployedBootstrapValidatorID: null,
+    bootstrapPayload: null,
   },
   reducers: {
     setLoading(state, payload) {
@@ -31,6 +32,9 @@ const wizard = {
     },
     setDeployedBootstrapValidatorID(state, payload) {
       return { ...state, deployedBootstrapValidatorID: payload };
+    },
+    setBootstrapPayload(state, payload) {
+      return { ...state, bootstrapPayload: payload };
     },
     updateStepData(state, { step, data }) {
       return {
@@ -56,6 +60,7 @@ const wizard = {
         loading: false,
         error: null,
         networkDetails: {},
+        bootstrapPayload: null,
       };
     },
   },
@@ -76,7 +81,7 @@ const wizard = {
             chainId: payload.chainId,
             tokenSymbol: payload.tokenSymbol,
           });
-          // Step 2: Create orbit (if availability check passes)
+          // Step 2: Create riff (if availability check passes)
           const createPayload = {
             networkName: payload.networkName,
             description: payload.description || "",
@@ -110,7 +115,7 @@ const wizard = {
             ],
           };
           const response = await axiosInstance.post("/subnets", createPayload);
-          toast.success("Orbit deployment initialized successfully!");
+          toast.success("Riff deployment initialized successfully!");
           // Store response data
           dispatch.wizard.setCreateSubnetTxID(response?.data?.id);
           dispatch.wizard.updateStepData({
@@ -134,9 +139,18 @@ const wizard = {
     async bootstrapValidators(payload, rootState) {
       dispatch.wizard.setLoading(true);
       try {
+        // The manifest is collected on the validator step and only sent here.
+        const deployPayload = payload || rootState.wizard.bootstrapPayload;
+
+        if (!deployPayload) {
+          throw new Error(
+            "Bootstrap validator configuration is missing. Revisit the validator step.",
+          );
+        }
+
         const response = await axiosInstance.post(
           `/subnets/${rootState.wizard.createSubnetTxID}/deploy`,
-          payload,
+          deployPayload,
         );
         if (response) {
           const jobId =
@@ -155,7 +169,7 @@ const wizard = {
             step: "bootstrap",
             data: {
               ...response.data,
-              validators: payload?.bootstrapValidators?.validators || [],
+              validators: deployPayload?.bootstrapValidators?.validators || [],
             },
           });
           return response.data;
@@ -259,7 +273,7 @@ const wizard = {
         dispatch.wizard.setLoading(false);
       }
     },
-    async initializeOrbitDeployment(payload, rootState) {
+    async initializeRiffDeployment(payload, rootState) {
       dispatch.wizard.setLoading(true);
       try {
         const response = await axiosInstance.get(
@@ -278,7 +292,7 @@ const wizard = {
             response?.data?.state === "pending" ||
             response?.data?.status === "pending"
           ) {
-            toast.success("Orbit transaction created successfully!");
+            toast.success("Riff transaction created successfully!");
           }
           try {
             const result =

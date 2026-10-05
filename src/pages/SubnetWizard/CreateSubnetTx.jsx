@@ -5,90 +5,54 @@ import {
   HiCheckCircle,
   HiQuestionMarkCircle,
 } from "react-icons/hi";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import NetworkSummary from "../../components/NetworkSummary";
-import { orbitRegistrationStep } from "../../utils";
+import { riffRegistrationStep } from "../../utils";
 
-const ORBIT_TX_SUCCESS_TOAST_ID = "orbit-tx-created-success";
-
-const getJobFailureMessage = (job) => {
-  const rawMessage = job?.errorMessage || job?.message || "";
-  const isUnavailableDeployment =
-    job?.errorCode === "deployment_failed" ||
-    /status code:\s*503/i.test(rawMessage);
-
-  if (isUnavailableDeployment) {
-    return "Orbit deployment could not be completed because the deployment service is temporarily unavailable. Please try again in a moment.";
-  }
-
-  return (
-    rawMessage ||
-    "Orbit deployment failed. Please review the configuration and try again."
-  );
-};
+const RIFF_TX_SUCCESS_TOAST_ID = "riff-tx-created-success";
 
 const CreateSubnetTx = () => {
   const { setRunAction, isApiSuccess, isLoading } = useOutletContext();
   const [progress, setProgress] = useState(0);
   const [activeStep, setActiveStep] = useState(0);
-  const dispatch = useDispatch();
   const networkDetails = useSelector((state) => state.wizard.networkDetails);
 
+  // No request is made here — the Riff is deployed from the final step.
   const handleRunApi = useCallback(async () => {
-    const res = await dispatch.wizard.createsubnetTx({});
+    setProgress(0);
+    setActiveStep(0);
 
-    const status = res?.status || res?.state;
+    // Total duration ~ 3 seconds for simulation
+    const interval = 30; // ms
+    const increment = 1;
 
-    if (
-      status === "pending" ||
-      status === "running" ||
-      status === "success" ||
-      status === "completed"
-    ) {
-      setProgress(0);
-      setActiveStep(0);
+    return new Promise((resolve) => {
+      const timer = setInterval(() => {
+        setProgress((prev) => {
+          const next = prev + increment;
 
-      // Total duration ~ 3 seconds for simulation
-      const interval = 30; // ms
-      const increment = 1;
+          // Map progress to steps
+          if (next < 20) setActiveStep(0);
+          else if (next < 40) setActiveStep(1);
+          else if (next < 60) setActiveStep(2);
+          else if (next < 80) setActiveStep(3);
+          else if (next < 100) setActiveStep(4);
 
-      return new Promise((resolve) => {
-        const timer = setInterval(() => {
-          setProgress((prev) => {
-            const next = prev + increment;
-
-            // Map progress to steps
-            if (next < 20) setActiveStep(0);
-            else if (next < 40) setActiveStep(1);
-            else if (next < 60) setActiveStep(2);
-            else if (next < 80) setActiveStep(3);
-            else if (next < 100) setActiveStep(4);
-
-            if (next >= 100) {
-              clearInterval(timer);
-              setActiveStep(5); // All done
-              toast.success("Orbit Registration created successfully!", {
-                toastId: ORBIT_TX_SUCCESS_TOAST_ID,
-              });
-              resolve();
-              return 100;
-            }
-            return next;
-          });
-        }, interval);
-      });
-    } else if (status === "failure" || status === "failed") {
-      const errorMsg = getJobFailureMessage(res);
-      toast.error(errorMsg);
-      throw new Error(errorMsg);
-    } else {
-      const errorMsg =
-        "The Orbit transaction job returned an unexpected status. Please try again.";
-      toast.error(errorMsg);
-      throw new Error(errorMsg);
-    }
-  }, [dispatch]);
+          if (next >= 100) {
+            clearInterval(timer);
+            setActiveStep(5); // All done
+            toast.success("Riff Registration created successfully!", {
+              toastId: RIFF_TX_SUCCESS_TOAST_ID,
+            });
+            resolve();
+            return 100;
+          }
+          return next;
+        });
+      }, interval);
+    });
+  }, []);
 
   useEffect(() => {
     setRunAction(() => handleRunApi);
@@ -102,10 +66,10 @@ const CreateSubnetTx = () => {
           <HiOutlineDocumentText size={24} />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-white ">Orbit Registration</h1>
+          <h1 className="text-2xl font-bold text-white ">Riff Registration</h1>
           <p className="text-gray-400 text-sm max-w-2xl leading-relaxed font-normal">
             Processing the on-chain registration transaction to officially
-            register your ORBIT and prepare it for deployment.
+            register your RIFF and prepare it for deployment.
           </p>
         </div>
       </div>
@@ -134,7 +98,7 @@ const CreateSubnetTx = () => {
         </svg>
 
         <p className="text-sm leading-6 text-gray-400">
-          Registers your Orbit under sovereign control with a{" "}
+          Registers your Riff under sovereign control with a{" "}
           <span className="inline-flex items-center gap-1 text-gray-200">
             1-of-1 authorization threshold
             <span className="group relative inline-flex">
@@ -144,7 +108,7 @@ const CreateSubnetTx = () => {
                 size={15}
               />
               <span className="pointer-events-none absolute bottom-full left-0 z-20 mb-2 hidden w-72 rounded-lg border border-cyan-500/30 bg-[#060914] p-3 text-left text-xs font-normal normal-case leading-relaxed text-gray-300 shadow-xl group-hover:block group-focus-within:block">
-                A single key currently authorizes changes to this Orbit. You can
+                A single key currently authorizes changes to this Riff. You can
                 migrate to an M-of-N multisig after deployment.
               </span>
             </span>
@@ -164,7 +128,7 @@ const CreateSubnetTx = () => {
             </div>
 
             <div className="space-y-3 px-1">
-              {orbitRegistrationStep.map((text, index) => {
+              {riffRegistrationStep.map((text, index) => {
                 const isActive = index <= activeStep;
                 const isCompleted = index < activeStep || isApiSuccess;
 

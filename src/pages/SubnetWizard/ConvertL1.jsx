@@ -8,7 +8,7 @@ import {
   HiQuestionMarkCircle,
 } from "react-icons/hi";
 import { toast } from "react-toastify";
-import { convertToOrbitSteps } from "../../utils";
+import { convertToRiffSteps } from "../../utils";
 import { useSelector } from "react-redux";
 import NetworkSummary from "../../components/NetworkSummary";
 
@@ -100,7 +100,7 @@ const ConvertL1 = () => {
             This action is IRREVERSIBLE
           </h4>
           <p className="text-gray-400 text-[13px] leading-relaxed">
-            This operation permanently establishes the Orbit as a sovereign
+            This operation permanently establishes the Riff as a sovereign
             network{" "}
             <span className="group relative inline-flex">
               <HiQuestionMarkCircle
@@ -114,7 +114,7 @@ const ConvertL1 = () => {
                 operation.
               </span>
             </span>
-            . Before this step, the Orbit is governed by the shared staking
+            . Before this step, the Riff is governed by the shared staking
             layer. After this step, only the addresses set as Validator Owner
             and the ValidatorManager contract can modify the validator set. The
             initial validator set shown below will be permanently committed to
@@ -136,7 +136,7 @@ const ConvertL1 = () => {
 
           {/* Logs */}
           <div className="space-y-3 px-1">
-            {convertToOrbitSteps.map((text, index) => {
+            {convertToRiffSteps.map((text, index) => {
               const isActive = index <= activeStep;
               const isCompleted = index < activeStep || isApiSuccess;
 
@@ -171,10 +171,10 @@ const ConvertL1 = () => {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold text-white mb-0.5">
-                    Orbit is Now Sovereign
+                    Riff is Now Sovereign
                   </h3>
                   <p className="text-gray-400 text-xs">
-                    Orbit converted to sovereign on RYT Mainnet
+                    Riff converted to sovereign on RYT Mainnet
                   </p>
                 </div>
               </div>
@@ -185,7 +185,7 @@ const ConvertL1 = () => {
                     Status
                   </span>
                   <span className="text-green-500 text-[11px] font-bold uppercase tracking-wider bg-green-500/10 px-2 py-0.5 rounded border border-green-500/20">
-                    Sovereign Orbit Active
+                    Sovereign Riff Active
                   </span>
                 </div>
                 <div className="flex justify-between items-center">

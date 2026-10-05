@@ -39,7 +39,7 @@ const ValidatorOwner = () => {
           <LuKey size={24} />
         </div>
         <div>
-          <h1 className="text-2xl font-bold text-white">Orbit Creator</h1>
+          <h1 className="text-2xl font-bold text-white">Riff Creator</h1>
           <p className="text-gray-400 text-sm">
             This address will have admin control over the ValidatorManager.
           </p>

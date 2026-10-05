@@ -106,7 +106,7 @@ const DeployVMC = () => {
               </div>
               <div>
                 <div className="text-[13px] font-bold text-white">
-                  Deploy to Orbit itself
+                  Deploy to Riff itself
                 </div>
                 <div className="text-[11px] text-gray-500 mt-0.5">
                   Default, recommended

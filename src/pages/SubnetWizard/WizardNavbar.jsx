@@ -14,7 +14,7 @@ const WizardNavbar = ({ currentStep, onRun, isLoading, isApiSuccess }) => {
             RYT
           </span>
           <span className="text-blue-500 font-semibold text-lg animate-pulse">
-            Orbit
+            RIFF
           </span>
         </div>
       </div>
@@ -57,7 +57,7 @@ const WizardNavbar = ({ currentStep, onRun, isLoading, isApiSuccess }) => {
         <div className="flex items-center gap-2 bg-green-950/20 px-3 py-1.5 rounded-md border border-green-500/20">
           <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
           <span className="text-green-500 text-[10px] font-bold uppercase tracking-wider">
-            Titan Testnet
+            RYT Mainnet
           </span>
         </div>
       </div>

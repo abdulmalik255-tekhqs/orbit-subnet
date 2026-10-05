@@ -5,6 +5,7 @@ import {
   HiPlay,
   HiRefresh,
   HiCheckCircle,
+  HiOutlineCloudUpload,
 } from "react-icons/hi";
 
 const WizardFooter = ({
@@ -13,10 +14,16 @@ const WizardFooter = ({
   onNext,
   onBack,
   onRun,
+  onDeploy,
   isLoading = false,
   isApiSuccess = false,
+  hasDeployAction = false,
+  isDeploySuccess = false,
+  isDeploying = false,
 }) => {
   const isActionStep = [4, 5, 6, 7].includes(currentStep);
+  // The final step deploys first, then initializes with the returned job.
+  const isDeployStep = hasDeployAction && currentStep === totalSteps;
 
   return (
     <footer className="h-20 border-t border-[#1e293b] bg-[#060914] flex items-center px-6 sticky bottom-0 z-10 w-full">
@@ -34,7 +41,50 @@ const WizardFooter = ({
           Step {currentStep} of {totalSteps}
         </div>
 
-        {isActionStep && !isApiSuccess ? (
+        {isDeployStep && !isApiSuccess ? (
+          <div className="flex items-center gap-3">
+            <button
+              onClick={onDeploy}
+              disabled={isDeploying || isDeploySuccess || isLoading}
+              className="flex items-center gap-2 px-8 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:opacity-50 disabled:cursor-not-allowed text-white text-[11px] font-bold uppercase tracking-wide transition-all shadow-[0_0_15px_rgba(37,99,235,0.2)]"
+            >
+              {isDeploying ? (
+                <>
+                  <HiRefresh className="animate-spin" />
+                  Deploying...
+                </>
+              ) : isDeploySuccess ? (
+                <>
+                  <HiCheckCircle />
+                  Deployed
+                </>
+              ) : (
+                <>
+                  <HiOutlineCloudUpload />
+                  Deploy
+                </>
+              )}
+            </button>
+
+            <button
+              onClick={onRun}
+              disabled={!isDeploySuccess || isLoading || isDeploying}
+              className="flex items-center gap-2 px-8 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 disabled:bg-emerald-900 disabled:opacity-40 disabled:cursor-not-allowed text-white text-[11px] font-bold uppercase tracking-wide transition-all shadow-[0_0_15px_rgba(16,185,129,0.2)]"
+            >
+              {isLoading ? (
+                <>
+                  <HiRefresh className="animate-spin" />
+                  Initializing...
+                </>
+              ) : (
+                <>
+                  <HiPlay />
+                  Finish
+                </>
+              )}
+            </button>
+          </div>
+        ) : isActionStep && !isApiSuccess ? (
           <button
             onClick={onRun}
             disabled={isLoading}
@@ -57,7 +107,7 @@ const WizardFooter = ({
             onClick={() => (window.location.href = "/")}
             className="flex items-center gap-2 px-8 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold uppercase tracking-wide transition-all shadow-[0_0_15px_rgba(16,185,129,0.2)]"
           >
-            Finish
+            Completed
             <HiCheckCircle className="text-sm" />
           </button>
         ) : (

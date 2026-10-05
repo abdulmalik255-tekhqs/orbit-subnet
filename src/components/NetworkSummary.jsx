@@ -24,7 +24,7 @@ const NetworkSummary = ({ network = {} }) => {
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
             <h2 className="text-xs font-bold uppercase tracking-wider text-blue-300">
-              Orbit Configuration
+              Riff Configuration
             </h2>
             <span className="text-[11px] text-gray-500">
               These details stay with your deployment

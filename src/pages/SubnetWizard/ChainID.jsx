@@ -23,7 +23,7 @@ const ChainID = () => {
         .trim()
         .required("Network Name is required")
         .matches(/^\S+$/, "Network Name must not contain spaces")
-        .max(20, "Network Name must be 20 characters or less"),
+        .max(30, "Network Name must be 30 characters or less"),
       chainId: Yup.string()
         .required("Chain ID is required")
         .matches(/^\d{4}$/, "Chain ID must be exactly 4 digits"),
@@ -92,7 +92,7 @@ const ChainID = () => {
         <div>
           <h1 className="text-2xl font-bold text-white">Network Details</h1>
           <p className="text-gray-400 text-sm max-w-2xl leading-relaxed">
-            Define your Orbit identity with a unique network name and Chain ID
+            Define your Riff identity with a unique network name and Chain ID
             for transaction and network identification.
           </p>
         </div>
@@ -114,7 +114,7 @@ const ChainID = () => {
             value={formik.values.networkName}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            placeholder="Enter network name (e.g., MyOrbit)"
+            placeholder="Enter network name (e.g., MyRiff)"
             className={`w-full bg-[#0a0f1d] border rounded-lg px-4 py-3 text-white focus:outline-none transition-colors ${
               hasFieldError("networkName")
                 ? "border-red-500 focus:border-red-500"
@@ -217,7 +217,7 @@ const ChainID = () => {
           requires a distinct Chain ID to maintain transaction isolation and
           prevent cross-environment replay conflicts.
           {/* A separate mainnet override
-          (sidecar.OrbitEVMMainnetChainID) can be applied at deploy time. */}
+          (sidecar.RiffEVMMainnetChainID) can be applied at deploy time. */}
         </p>
       </div>
 
@@ -235,7 +235,7 @@ const ChainID = () => {
             Mainnet override
           </span>
           <span className="text-gray-400 text-[11px] font-mono text-right">
-            sidecar.OrbitEVMMainnetChainID
+            sidecar.RiffEVMMainnetChainID
           </span>
         </div>
       </div> */}

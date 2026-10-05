@@ -13,6 +13,10 @@ const WizardLayout = () => {
   const [stepValidator, setStepValidator] = React.useState(null);
   const [isApiSuccess, setIsApiSuccess] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
+  // Final step only: the deploy action must succeed before the initialize one.
+  const [deployAction, setDeployAction] = React.useState(null);
+  const [isDeploySuccess, setIsDeploySuccess] = React.useState(false);
+  const [isDeploying, setIsDeploying] = React.useState(false);
 
   useEffect(() => {
     const path = location.pathname;
@@ -28,11 +32,11 @@ const WizardLayout = () => {
       step = 2;
     } else if (path === "/bootstrap-validators") {
       step = 3;
-    } else if (path === "/create-orbit-tx") {
+    } else if (path === "/create-riff-tx") {
       step = 4;
     } else if (path === "/create-chain-tx") {
       step = 5;
-    } else if (path === "/convert-orbit") {
+    } else if (path === "/convert-riff") {
       step = 6;
     } else if (path === "/initialize-vmc") {
       step = 7;
@@ -43,6 +47,8 @@ const WizardLayout = () => {
       setStepValidator(null);
       setIsApiSuccess(false);
       setIsLoading(false);
+      setIsDeploySuccess(false);
+      setIsDeploying(false);
     }
   }, [location, currentStep]);
 
@@ -67,6 +73,20 @@ const WizardLayout = () => {
       } finally {
         setIsLoading(false);
       }
+    }
+  };
+
+  const handleDeploy = async () => {
+    if (!deployAction || isDeploying || isLoading) return;
+
+    setIsDeploying(true);
+    try {
+      await deployAction();
+      setIsDeploySuccess(true);
+    } catch (error) {
+      console.error("Deploy failed", error);
+    } finally {
+      setIsDeploying(false);
     }
   };
 
@@ -138,8 +158,11 @@ const WizardLayout = () => {
                 setCurrentStep,
                 setRunAction,
                 setStepValidator,
+                setDeployAction,
                 isApiSuccess,
                 isLoading,
+                isDeploySuccess,
+                isDeploying,
               }}
             />
           </div>
@@ -150,8 +173,12 @@ const WizardLayout = () => {
             onNext={handleNext}
             onBack={handleBack}
             onRun={handleRun}
+            onDeploy={handleDeploy}
             isLoading={isLoading}
             isApiSuccess={isApiSuccess}
+            hasDeployAction={Boolean(deployAction)}
+            isDeploySuccess={isDeploySuccess}
+            isDeploying={isDeploying}
           />
         </main>
       </div>
